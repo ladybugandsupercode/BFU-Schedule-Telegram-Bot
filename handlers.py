@@ -67,14 +67,17 @@ async def cmd_start(message: Message, state: FSMContext):
     lang = await get_user_language(message.from_user.id)
     
     if group:
+        # Пользователь уже зарегистрирован — показываем меню
         await message.answer(
             t(lang, "welcome_back", group=group),
             reply_markup=main_menu_kb(lang), parse_mode="HTML"
         )
     else:
+        # Новый пользователь — показываем дружелюбное приветствие
         await message.answer(
-            t(lang, "choose_lang"),
-            reply_markup=language_kb()
+            t(lang, "welcome"),
+            reply_markup=language_kb(),
+            parse_mode="HTML"
         )
         await state.set_state(Register.waiting_language)
 
@@ -83,13 +86,20 @@ async def cmd_start(message: Message, state: FSMContext):
 async def process_language(callback: CallbackQuery, state: FSMContext):
     lang = callback.data.split("_")[1]
     await set_user_language(callback.from_user.id, lang)
-    await callback.message.edit_text(t(lang, "lang_set"))
     
+    # Удаляем сообщение с кнопками языка
+    try:
+        await callback.message.delete()
+    except Exception:
+        pass
+    
+    # Отправляем запрос группы с примером
     await callback.message.answer(
         t(lang, "enter_group"),
         parse_mode="HTML"
     )
     await state.set_state(Register.waiting_group)
+    await callback.answer()
 
 
 @router.message(Register.waiting_group)
