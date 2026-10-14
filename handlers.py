@@ -81,6 +81,19 @@ async def cmd_start(message: Message, state: FSMContext):
         )
         await state.set_state(Register.waiting_language)
 
+@router.message(Command("reset"))
+async def cmd_reset(message: Message, state: FSMContext):
+    """Сбрасывает все данные пользователя и начинает онбординг заново."""
+    from database import set_user_group, set_user_language
+    await set_user_group(message.from_user.id, "")
+    await set_user_language(message.from_user.id, "ru")
+    await state.clear()
+    await message.answer(
+        "🔄 Всё сброшено! Давай начнём заново.\n\n" + t("ru", "welcome"),
+        reply_markup=language_kb(),
+        parse_mode="HTML"
+    )
+
 
 @router.callback_query(Register.waiting_language, F.data.startswith("lang_"))
 async def process_language(callback: CallbackQuery, state: FSMContext):
