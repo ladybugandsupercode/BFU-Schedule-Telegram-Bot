@@ -1,49 +1,202 @@
-TEXTS = {
-    "ru": {
-        "welcome": "Привет! 👋 Я бот расписания БФУ им. И. Канта.",
-        "enter_group": "Введи номер своей академической группы (например, <code>123456</code>):",
-        "group_saved": "✅ Группа <b>{group}</b> сохранена!",
-        "group_invalid": "❌ Группа указана неверно. Попробуй ещё раз:",
-        "fetch_error": "❌ Не удалось получить расписание для этой группы. Проверь номер:",
-        "choose_lang": "🌍 Выбери язык / Choose language:",
-        "lang_set": "✅ Язык установлен: Русский",
-        "no_classes": "Пар нет, можно отдыхать! 🎉",
-        "error_schedule": "❌ Ошибка получения расписания. Попробуй позже.",
-        "settings": "Текущая группа: <b>{group}</b>\n\nВведи новый номер группы:",
-        "today": "📅 Сегодня",
-        "tomorrow": "📆 Завтра",
-        "week": "🗓 На неделю",
-        "custom_date": "📆 Выбрать дату",
-        "settings_btn": "⚙️ Настройки",
-        "language_btn": "🌍 Язык / Language",
-        "enter_date": "Введи дату в формате <code>ДД.ММ.ГГГГ</code> (например, <code>15.10.2026</code>):",
-        "date_invalid": "❌ Неверный формат даты. Попробуй ещё раз:",
-        "welcome_back": "С возвращением! 👋\nТвоя группа: <b>{group}</b>",
-    },
-    "en": {
-        "welcome": "Hello! 👋 I'm the BFU Im. Kant schedule bot.",
-        "enter_group": "Enter your academic group number (e.g., <code>123456</code>):",
-        "group_saved": "✅ Group <b>{group}</b> saved!",
-        "group_invalid": "❌ Invalid group number. Try again:",
-        "fetch_error": "❌ Could not fetch schedule for this group. Check the number:",
-        "choose_lang": "🌍 Choose language / Выбери язык:",
-        "lang_set": "✅ Language set: English",
-        "no_classes": "No classes today, enjoy your free time! 🎉",
-        "error_schedule": "❌ Error fetching schedule. Try again later.",
-        "settings": "Current group: <b>{group}</b>\n\nEnter new group number:",
-        "today": "📅 Today",
-        "tomorrow": "📆 Tomorrow",
-        "week": "🗓 Week",
-        "custom_date": "📆 Custom date",
-        "settings_btn": "⚙️ Settings",
-        "language_btn": "🌍 Language / Язык",
-        "enter_date": "Enter date in format <code>DD.MM.YYYY</code> (e.g., <code>15.10.2026</code>):",
-        "date_invalid": "❌ Invalid date format. Try again:",
-        "welcome_back": "Welcome back! 👋\nYour group: <b>{group}</b>",
-    }
-}
+import json
+import time
+import logging
+from datetime import datetime
+from aiogram import Router, F
+from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.types import Message, CallbackQuery
+
+from config import CACHE_TTL_MINUTES
+from database import (
+    set_user_group, get_user_group, get_cached_schedule, save_cached_schedule,
+    set_user_language, get_user_language
+)
+from keyboards import main_menu_kb, language_kb
+from parser import fetch_schedule, get_today, get_tomorrow, get_week_dates
+from locales import t
+
+logger = logging.getLogger(__name__)
+router = Router()
 
 
-def t(lang: str, key: str, **kwargs) -> str:
-    text = TEXTS.get(lang, TEXTS["ru"]).get(key, key)
-    return text.format(**kwargs) if kwargs else text
+class Register(StatesGroup):
+    waiting_group = State()
+    waiting_language = State()
+    waiting_custom_date = State()
+
+
+def format_day(date_key: str, lessons: list, lang: str) -> str:
+    if not lessons:
+        return f"<b>📅 {date_key}</b>\n\n{t(lang, 'no_classes')}"
+
+    day_name = datetime.strptime(date_key, "%Y-%m-%d").strftime("%A, %d.%m")
+    lines = [f"<b>📅 {day_name}</b>\n"]
+    for l in lessons:
+        lines.append(
+            f"⏰ <b>{l['time']}</b>\n"
+            f"📘 <b>{l['subject']}</b>\n"
+            f"👨‍🏫 {l['teacher']}\n"
+            f"🏫 {l['room']}\n"
+        )
+    return "\n".join(lines)
+
+
+async def get_schedule_for_user(telegram_id: int, force_refresh: bool = False) -> dict | None:
+    if not force_refresh:
+        cached = await get_cached_schedule(telegram_id)
+        if cached and cached[1]:
+            age = int(time.time()) - cached[1]
+            if age < CACHE_TTL_MINUTES * 60 and cached[0]:
+                return json.loads(cached[0])
+
+    group = await get_user_group(telegram_id)
+    if not group:
+        return None
+
+    data = await fetch_schedule(group)
+    if data is not None:
+        await save_cached_schedule(telegram_id, json.dumps(data), int(time.time()))
+    return data
+
+
+@router.message(Command("start"))
+async def cmd_start(message: Message, state: FSMContext):
+    group = await get_user_group(message.from_user.id)
+    lang = await get_user_language(message.from_user.id)
+    
+    if group:
+        # Пользователь уже зарегистрирован — показываем меню
+        await message.answer(
+            t(lang, "welcome_back", group=group),
+            reply_markup=main_menu_kb(lang), parse_mode="HTML"
+        )
+    else:
+        # Новый пользователь — показываем дружелюбное приветствие
+        await message.answer(
+            t(lang, "welcome"),
+            reply_markup=language_kb(),
+            parse_mode="HTML"
+        )
+        await state.set_state(Register.waiting_language)
+
+
+@router.callback_query(Register.waiting_language, F.data.startswith("lang_"))
+async def process_language(callback: CallbackQuery, state: FSMContext):
+    lang = callback.data.split("_")[1]
+    await set_user_language(callback.from_user.id, lang)
+    
+    # Удаляем сообщение с кнопками языка
+    try:
+        await callback.message.delete()
+    except Exception:
+        pass
+    
+    # Отправляем запрос группы с примером
+    await callback.message.answer(
+        t(lang, "enter_group"),
+        parse_mode="HTML"
+    )
+    await state.set_state(Register.waiting_group)
+    await callback.answer()
+
+
+@router.message(Register.waiting_group)
+async def process_group(message: Message, state: FSMContext):
+    lang = await get_user_language(message.from_user.id)
+    group = message.text.strip()
+    
+    if len(group) < 3:
+        await message.answer(t(lang, "group_invalid"))
+        return
+
+    data = await fetch_schedule(group)
+    if data is None:
+        await message.answer(t(lang, "fetch_error"))
+        return
+
+    await set_user_group(message.from_user.id, group)
+    await state.clear()
+    await message.answer(
+        t(lang, "group_saved", group=group),
+        reply_markup=main_menu_kb(lang), parse_mode="HTML"
+    )
+
+
+@router.message(F.text.in_([t("ru", "today"), t("en", "today")]))
+async def show_today(message: Message):
+    lang = await get_user_language(message.from_user.id)
+    await show_day(message, get_today(), lang)
+
+
+@router.message(F.text.in_([t("ru", "tomorrow"), t("en", "tomorrow")]))
+async def show_tomorrow(message: Message):
+    lang = await get_user_language(message.from_user.id)
+    await show_day(message, get_tomorrow(), lang)
+
+
+async def show_day(message: Message, date_key: str, lang: str):
+    schedule = await get_schedule_for_user(message.from_user.id)
+    if schedule is None:
+        await message.answer(t(lang, "error_schedule"))
+        return
+    lessons = schedule.get(date_key, [])
+    await message.answer(format_day(date_key, lessons, lang), parse_mode="HTML")
+
+
+@router.message(F.text.in_([t("ru", "week"), t("en", "week")]))
+async def show_week(message: Message):
+    lang = await get_user_language(message.from_user.id)
+    schedule = await get_schedule_for_user(message.from_user.id)
+    if schedule is None:
+        await message.answer(t(lang, "error_schedule"))
+        return
+    days = get_week_dates()
+    parts = [format_day(d, schedule.get(d, []), lang) for d in days]
+    full = "\n\n".join(parts)
+
+    if len(full) <= 4000:
+        await message.answer(full, parse_mode="HTML")
+    else:
+        for d in days:
+            await message.answer(format_day(d, schedule.get(d, []), lang), parse_mode="HTML")
+
+
+@router.message(F.text.in_([t("ru", "custom_date"), t("en", "custom_date")]))
+async def ask_custom_date(message: Message, state: FSMContext):
+    lang = await get_user_language(message.from_user.id)
+    await message.answer(t(lang, "enter_date"), parse_mode="HTML")
+    await state.set_state(Register.waiting_custom_date)
+
+
+@router.message(Register.waiting_custom_date)
+async def process_custom_date(message: Message, state: FSMContext):
+    lang = await get_user_language(message.from_user.id)
+    try:
+        date_obj = datetime.strptime(message.text.strip(), "%d.%m.%Y")
+        date_key = date_obj.strftime("%Y-%m-%d")
+        await show_day(message, date_key, lang)
+        await state.clear()
+    except ValueError:
+        await message.answer(t(lang, "date_invalid"))
+
+
+@router.message(F.text.in_([t("ru", "settings_btn"), t("en", "settings_btn")]))
+async def settings(message: Message, state: FSMContext):
+    lang = await get_user_language(message.from_user.id)
+    group = await get_user_group(message.from_user.id)
+    await message.answer(
+        t(lang, "settings", group=group or "—"),
+        parse_mode="HTML"
+    )
+    await state.set_state(Register.waiting_group)
+
+
+@router.message(F.text.in_([t("ru", "language_btn"), t("en", "language_btn")]))
+async def change_language(message: Message, state: FSMContext):
+    await message.answer(
+        t("ru", "choose_lang"),
+        reply_markup=language_kb()
+    )
+    await state.set_state(Register.waiting_language)
