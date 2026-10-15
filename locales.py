@@ -52,7 +52,7 @@ TEXTS = {
             "💡 Возможно, группа указана неверно или сайт БФУ временно недоступен.\n"
             "📋 Напиши /groups для проверки списка групп\n\n"
             "🆘 <b>Если проблема не решается:</b>\n"
-            "Напишите в поддержку: @your_username"
+            "Напишите в поддержку: @alexa_ash_avery"
         ),
         "choose_lang": "🌍 <b>Выбери язык / Choose language:</b>",
         "lang_set": "✅ <b>Язык установлен: Русский</b>",
@@ -61,7 +61,7 @@ TEXTS = {
             "❌ <b>Ошибка получения расписания.</b>\n\n"
             "💡 Попробуй позже или проверь группу командой /groups\n\n"
             "🆘 <b>Если проблема сохраняется:</b>\n"
-            "Напишите в поддержку: @your_username"
+            "Напишите в поддержку: @alexa_ash_avery"
         ),
         "settings": (
             "⚙️ <b>Настройки</b>\n\n"
@@ -100,7 +100,7 @@ TEXTS = {
             "• 🌍 Язык — сменить язык\n"
             "• 📋 Список групп — показать все специальности\n\n"
             "🆘 <b>Нужна помощь?</b>\n"
-            "Напишите в поддержку: @your_username"
+            "Напишите в поддержку: @alexa_ash_avery"
         ),
     },
     "en": {
@@ -148,7 +148,7 @@ TEXTS = {
             "💡 You might have made a typo.\n"
             "📋 Type /groups to see all groups\n\n"
             "🆘 <b>If your group is not in the list</b> or doesn't appear:\n"
-            "Contact support: @your_username\n\n"
+            "Contact support: @alexa_ash_avery\n\n"
             "👇 <b>Try entering the group again:</b>"
         ),
         "fetch_error": (
@@ -156,7 +156,7 @@ TEXTS = {
             "💡 The group might be incorrect or BFU website is temporarily unavailable.\n"
             "📋 Type /groups to verify the group list\n\n"
             "🆘 <b>If the problem persists:</b>\n"
-            "Contact support: @your_username"
+            "Contact support: @alexa_ash_avery"
         ),
         "choose_lang": "🌍 <b>Choose language / Выбери язык:</b>",
         "lang_set": "✅ <b>Language set: English</b>",
@@ -165,7 +165,7 @@ TEXTS = {
             "❌ <b>Error fetching schedule.</b>\n\n"
             "💡 Try again later or verify the group with /groups\n\n"
             "🆘 <b>If the problem persists:</b>\n"
-            "Contact support: @your_username"
+            "Contact support: @alexa_ash_avery"
         ),
         "settings": (
             "⚙️ <b>Settings</b>\n\n"
@@ -204,7 +204,7 @@ TEXTS = {
             "• 🌍 Language — change language\n"
             "• 📋 Group list — show all programs\n\n"
             "🆘 <b>Need help?</b>\n"
-            "Contact support: @your_username"
+            "Contact support: @alexa_ash_avery"
         ),
     }
 }
