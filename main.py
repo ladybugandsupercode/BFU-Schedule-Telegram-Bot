@@ -2,31 +2,24 @@ import asyncio
 import logging
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-
 from config import BOT_TOKEN
-from database import init_db
 from handlers import router
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 async def main():
-    print("🚀 Запускаем бота в облаке...")
-    
-    await init_db()
-    
+    print("🚀 Запускаем минимального бота...")
     bot = Bot(token=BOT_TOKEN)
     
-    # 🔥 КЛЮЧЕВАЯ СТРОЧКА: удаляем webhook, если он был установлен ранее
+    # Сбрасываем вебхук, чтобы гарантированно работал polling
     await bot.delete_webhook(drop_pending_updates=True)
-    print("🧹 Webhook удалён (если был)")
     
     dp = Dispatcher(storage=MemoryStorage())
+    
+    # САМАЯ ВАЖНАЯ СТРОКА: подключаем роутер из handlers.py
     dp.include_router(router)
     
-    print("🎉 БОТ РАБОТАЕТ!")
+    print("✅ Бот запущен и слушает команды!")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
