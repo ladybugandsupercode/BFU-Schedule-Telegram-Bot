@@ -119,14 +119,29 @@ async def process_language(callback: CallbackQuery, state: FSMContext):
 async def process_group(message: Message, state: FSMContext):
     lang = await get_user_language(message.from_user.id)
     group = message.text.strip()
+
+    # 🛡️ ЗАЩИТА: Игнорируем нажатия кнопок меню, если бот ждёт ввода группы
+    menu_buttons = [
+        t("ru", "today"), t("en", "today"),
+        t("ru", "tomorrow"), t("en", "tomorrow"),
+        t("ru", "week"), t("en", "week"),
+        t("ru", "custom_date"), t("en", "custom_date"),
+        t("ru", "settings_btn"), t("en", "settings_btn"),
+        t("ru", "language_btn"), t("en", "language_btn")
+    ]
     
+    if group in menu_buttons:
+        # Просто напоминаем, что нужно ввести текст, а не нажимать кнопки
+        await message.answer(t(lang, "enter_group"), parse_mode="HTML")
+        return
+
     if len(group) < 3:
         await message.answer(t(lang, "group_invalid"))
         return
 
     data = await fetch_schedule(group)
     if data is None:
-        await message.answer(t(lang, "fetch_error"))
+        await message.answer(t(lang, "fetch_error") + "\n\n" + t(lang, "enter_group"), parse_mode="HTML")
         return
 
     await set_user_group(message.from_user.id, group)
