@@ -25,7 +25,7 @@ TEXTS = {
             "✅ <b>Отлично! / Great!</b>\n\n"
             "👇 <b>Выберите действие / Choose an action:</b>"
         ),
-        "group_saved": "✅ <b>Группа {group} сохранена!</b>\n\n🎯 Теперь выбери, что показать:",
+        "group_saved": "✅ <b>Группа {groups_text} сохранена!</b>\n\n🎯 Теперь выбери, что показать:",
         "group_invalid": (
             "❌ <b>Группа указана неверно.</b>\n\n"
             "💡 Проверь формат: <code>03_ФИИТ_26_02</code>\n"
@@ -51,7 +51,7 @@ TEXTS = {
         ),
         "settings": (
             "⚙️ <b>Настройки</b>\n\n"
-            "📚 <b>Текущая группа:</b> {group}\n\n"
+            "📚 <b>Текущая группа:</b> {groups_text}\n\n"
             "👇 <b>Введи новый номер группы:</b>"
         ),
         "today": "📅 Сегодня",
@@ -66,7 +66,7 @@ TEXTS = {
         "date_invalid": "❌ <b>Неверный формат даты.</b>\n\n💡 Правильный формат: <code>ДД.ММ.ГГГГ</code>",
         "welcome_back": (
             "👋 <b>С возвращением!</b>\n\n"
-            "🎓 <b>Твоя группа:</b> {group}\n\n"
+            "🎓 <b>Твоя группа:</b> {groups_text}\n\n"
             "🎯 <b>Выбери действие:</b>"
         ),
         "reset_success": "🔄 <b>Данные сброшены!</b>\n\n👇 <b>Выберите язык для продолжения:</b>",
@@ -95,7 +95,7 @@ TEXTS = {
     },
     "en": {
         "after_language": "✅ <b>Great!</b>\n\n👇 <b>Choose an action:</b>",
-        "group_saved": "✅ <b>Group {group} saved!</b>\n\n🎯 Now choose what to show:",
+        "group_saved": "✅ <b>Group {groups_text} saved!</b>\n\n🎯 Now choose what to show:",
         "group_invalid": "❌ <b>Invalid group number.</b>\n\n💡 Check the format: <code>03_ФИИТ_26_02</code>\n👇 <b>Try again:</b>",
         "group_not_found": "❌ <b>Group not found in BFU database.</b>\n\n🆘 If your group is missing, contact: @alexa_ash_avery\n\n👇 <b>Try entering the group again:</b>",
         "fetch_error": "❌ <b>Could not fetch schedule.</b>\n\n🆘 If the problem persists, contact: @alexa_ash_avery",
@@ -114,7 +114,7 @@ TEXTS = {
         "help_btn": "❓ Help",
         "enter_date": "📅 <b>Enter date in format <code>DD.MM.YYYY</code></b>\n\n📌 <b>Example:</b> <code>15.10.2026</code>",
         "date_invalid": "❌ <b>Invalid date format.</b>\n\n💡 Correct format: <code>DD.MM.YYYY</code>",
-        "welcome_back": "👋 <b>Welcome back!</b>\n\n🎓 <b>Your group:</b> {group}\n\n🎯 <b>Choose an action:</b>",
+        "welcome_back": "👋 <b>Welcome back!</b>\n\n🎓 <b>Your group:</b> {groups_text}\n\n🎯 <b>Choose an action:</b>",
         "reset_success": "🔄 <b>Data reset!</b>\n\n👇 <b>Choose language to continue:</b>",
         "help_message": (
             "❓ <b>Help</b>\n\n"
