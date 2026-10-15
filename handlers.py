@@ -60,18 +60,6 @@ async def get_schedule_for_user(telegram_id: int, force_refresh: bool = False) -
         await save_cached_schedule(telegram_id, json.dumps(data), int(time.time()))
     return data
 
-@router.message(Command("reset"))
-async def cmd_reset(message: Message, state: FSMContext):
-    """Сбрасывает все данные пользователя и начинает онбординг заново."""
-    from database import set_user_group, set_user_language
-    await set_user_group(message.from_user.id, "")
-    await set_user_language(message.from_user.id, "ru")
-    await state.clear()
-    await message.answer(
-        "🔄 Данные сброшены! Давай начнём заново.\n\n" + t("ru", "welcome"),
-        reply_markup=language_kb(),
-        parse_mode="HTML"
-    )
 
 @router.message(Command("start"))
 async def cmd_start(message: Message, state: FSMContext):
@@ -79,52 +67,43 @@ async def cmd_start(message: Message, state: FSMContext):
     lang = await get_user_language(message.from_user.id)
     
     if group:
-        # Пользователь уже зарегистрирован — показываем меню
         await message.answer(
             t(lang, "welcome_back", group=group),
             reply_markup=main_menu_kb(lang), parse_mode="HTML"
         )
     else:
-        # Новый пользователь — показываем дружелюбное приветствие
+        await state.set_state(Register.waiting_language)
         await message.answer(
             t(lang, "welcome"),
             reply_markup=language_kb(),
             parse_mode="HTML"
         )
-        await state.set_state(Register.waiting_language)
+
 
 @router.message(Command("reset"))
 async def cmd_reset(message: Message, state: FSMContext):
-    """Сбрасывает все данные пользователя и начинает онбординг заново."""
-    from database import set_user_group, set_user_language
     await set_user_group(message.from_user.id, "")
     await set_user_language(message.from_user.id, "ru")
     await state.clear()
+    await state.set_state(Register.waiting_language)
     await message.answer(
-        "🔄 Всё сброшено! Давай начнём заново.\n\n" + t("ru", "welcome"),
+        "🔄 Данные сброшены! Давай начнём заново.\n\n" + t("ru", "welcome"),
         reply_markup=language_kb(),
         parse_mode="HTML"
     )
 
 
-@router.callback_query(Register.waiting_language, F.data.startswith("lang_"))
+@router.callback_query(F.data.startswith("lang_"))
 async def process_language(callback: CallbackQuery, state: FSMContext):
     lang = callback.data.split("_")[1]
     await set_user_language(callback.from_user.id, lang)
+    await state.set_state(Register.waiting_group)
     
-    # Удаляем сообщение с кнопками языка
-    try:
-        await callback.message.delete()
-    except Exception:
-        pass
-    
-    # Отправляем запрос группы с примером
+    await callback.answer()
     await callback.message.answer(
         t(lang, "enter_group"),
         parse_mode="HTML"
     )
-    await state.set_state(Register.waiting_group)
-    await callback.answer()
 
 
 @router.message(Register.waiting_group)
@@ -132,7 +111,6 @@ async def process_group(message: Message, state: FSMContext):
     lang = await get_user_language(message.from_user.id)
     group = message.text.strip()
 
-    # 🛡️ ЗАЩИТА: Игнорируем нажатия кнопок меню, если бот ждёт ввода группы
     menu_buttons = [
         t("ru", "today"), t("en", "today"),
         t("ru", "tomorrow"), t("en", "tomorrow"),
@@ -143,7 +121,6 @@ async def process_group(message: Message, state: FSMContext):
     ]
     
     if group in menu_buttons:
-        # Просто напоминаем, что нужно ввести текст, а не нажимать кнопки
         await message.answer(t(lang, "enter_group"), parse_mode="HTML")
         return
 
@@ -235,8 +212,8 @@ async def settings(message: Message, state: FSMContext):
 
 @router.message(F.text.in_([t("ru", "language_btn"), t("en", "language_btn")]))
 async def change_language(message: Message, state: FSMContext):
+    await state.set_state(Register.waiting_language)
     await message.answer(
         t("ru", "choose_lang"),
         reply_markup=language_kb()
     )
-    await state.set_state(Register.waiting_language)
