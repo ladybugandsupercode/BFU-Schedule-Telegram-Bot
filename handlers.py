@@ -1,219 +1,25 @@
-import json
-import time
-import logging
-from datetime import datetime
 from aiogram import Router, F
 from aiogram.filters import Command
-from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
-from config import CACHE_TTL_MINUTES
-from database import (
-    set_user_group, get_user_group, get_cached_schedule, save_cached_schedule,
-    set_user_language, get_user_language
-)
-from keyboards import main_menu_kb, language_kb
-from parser import fetch_schedule, get_today, get_tomorrow, get_week_dates
-from locales import t
-
-logger = logging.getLogger(__name__)
 router = Router()
 
-
-class Register(StatesGroup):
-    waiting_group = State()
-    waiting_language = State()
-    waiting_custom_date = State()
-
-
-def format_day(date_key: str, lessons: list, lang: str) -> str:
-    if not lessons:
-        return f"<b>📅 {date_key}</b>\n\n{t(lang, 'no_classes')}"
-
-    day_name = datetime.strptime(date_key, "%Y-%m-%d").strftime("%A, %d.%m")
-    lines = [f"<b>📅 {day_name}</b>\n"]
-    for l in lessons:
-        lines.append(
-            f"⏰ <b>{l['time']}</b>\n"
-            f"📘 <b>{l['subject']}</b>\n"
-            f"👨‍🏫 {l['teacher']}\n"
-            f"🏫 {l['room']}\n"
-        )
-    return "\n".join(lines)
-
-
-async def get_schedule_for_user(telegram_id: int, force_refresh: bool = False) -> dict | None:
-    if not force_refresh:
-        cached = await get_cached_schedule(telegram_id)
-        if cached and cached[1]:
-            age = int(time.time()) - cached[1]
-            if age < CACHE_TTL_MINUTES * 60 and cached[0]:
-                return json.loads(cached[0])
-
-    group = await get_user_group(telegram_id)
-    if not group:
-        return None
-
-    data = await fetch_schedule(group)
-    if data is not None:
-        await save_cached_schedule(telegram_id, json.dumps(data), int(time.time()))
-    return data
-
-
 @router.message(Command("start"))
-async def cmd_start(message: Message, state: FSMContext):
-    group = await get_user_group(message.from_user.id)
-    lang = await get_user_language(message.from_user.id)
-    
-    if group:
-        await message.answer(
-            t(lang, "welcome_back", group=group),
-            reply_markup=main_menu_kb(lang), parse_mode="HTML"
-        )
-    else:
-        await state.set_state(Register.waiting_language)
-        await message.answer(
-            t(lang, "welcome"),
-            reply_markup=language_kb(),
-            parse_mode="HTML"
-        )
-
-
-@router.message(Command("reset"))
-async def cmd_reset(message: Message, state: FSMContext):
-    await set_user_group(message.from_user.id, "")
-    await set_user_language(message.from_user.id, "ru")
-    await state.clear()
-    await state.set_state(Register.waiting_language)
-    await message.answer(
-        "🔄 Данные сброшены! Давай начнём заново.\n\n" + t("ru", "welcome"),
-        reply_markup=language_kb(),
-        parse_mode="HTML"
-    )
-
+async def cmd_start(message: Message):
+    # Создаем клавиатуру вручную, чтобы точно знать, какие callback_data она шлет
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang_ru")],
+        [InlineKeyboardButton(text="🇬🇧 English", callback_data="lang_en")]
+    ])
+    await message.answer("Привет! Это тест. Выбери язык:", reply_markup=keyboard)
 
 @router.callback_query(F.data.startswith("lang_"))
-async def process_language(callback: CallbackQuery, state: FSMContext):
+async def process_language(callback: CallbackQuery):
+    # Извлекаем 'ru' или 'en' из 'lang_ru'
     lang = callback.data.split("_")[1]
-    await set_user_language(callback.from_user.id, lang)
-    await state.set_state(Register.waiting_group)
     
-    await callback.answer()
-    await callback.message.answer(
-        t(lang, "enter_group"),
-        parse_mode="HTML"
-    )
-
-
-@router.message(Register.waiting_group)
-async def process_group(message: Message, state: FSMContext):
-    lang = await get_user_language(message.from_user.id)
-    group = message.text.strip()
-
-    menu_buttons = [
-        t("ru", "today"), t("en", "today"),
-        t("ru", "tomorrow"), t("en", "tomorrow"),
-        t("ru", "week"), t("en", "week"),
-        t("ru", "custom_date"), t("en", "custom_date"),
-        t("ru", "settings_btn"), t("en", "settings_btn"),
-        t("ru", "language_btn"), t("en", "language_btn")
-    ]
+    # Обязательно отвечаем на callback, чтобы у пользователя перестал крутиться значок загрузки
+    await callback.answer(f"Язык {lang} выбран!")
     
-    if group in menu_buttons:
-        await message.answer(t(lang, "enter_group"), parse_mode="HTML")
-        return
-
-    if len(group) < 3:
-        await message.answer(t(lang, "group_invalid"))
-        return
-
-    data = await fetch_schedule(group)
-    if data is None:
-        await message.answer(t(lang, "fetch_error") + "\n\n" + t(lang, "enter_group"), parse_mode="HTML")
-        return
-
-    await set_user_group(message.from_user.id, group)
-    await state.clear()
-    await message.answer(
-        t(lang, "group_saved", group=group),
-        reply_markup=main_menu_kb(lang), parse_mode="HTML"
-    )
-
-
-@router.message(F.text.in_([t("ru", "today"), t("en", "today")]))
-async def show_today(message: Message):
-    lang = await get_user_language(message.from_user.id)
-    await show_day(message, get_today(), lang)
-
-
-@router.message(F.text.in_([t("ru", "tomorrow"), t("en", "tomorrow")]))
-async def show_tomorrow(message: Message):
-    lang = await get_user_language(message.from_user.id)
-    await show_day(message, get_tomorrow(), lang)
-
-
-async def show_day(message: Message, date_key: str, lang: str):
-    schedule = await get_schedule_for_user(message.from_user.id)
-    if schedule is None:
-        await message.answer(t(lang, "error_schedule"))
-        return
-    lessons = schedule.get(date_key, [])
-    await message.answer(format_day(date_key, lessons, lang), parse_mode="HTML")
-
-
-@router.message(F.text.in_([t("ru", "week"), t("en", "week")]))
-async def show_week(message: Message):
-    lang = await get_user_language(message.from_user.id)
-    schedule = await get_schedule_for_user(message.from_user.id)
-    if schedule is None:
-        await message.answer(t(lang, "error_schedule"))
-        return
-    days = get_week_dates()
-    parts = [format_day(d, schedule.get(d, []), lang) for d in days]
-    full = "\n\n".join(parts)
-
-    if len(full) <= 4000:
-        await message.answer(full, parse_mode="HTML")
-    else:
-        for d in days:
-            await message.answer(format_day(d, schedule.get(d, []), lang), parse_mode="HTML")
-
-
-@router.message(F.text.in_([t("ru", "custom_date"), t("en", "custom_date")]))
-async def ask_custom_date(message: Message, state: FSMContext):
-    lang = await get_user_language(message.from_user.id)
-    await message.answer(t(lang, "enter_date"), parse_mode="HTML")
-    await state.set_state(Register.waiting_custom_date)
-
-
-@router.message(Register.waiting_custom_date)
-async def process_custom_date(message: Message, state: FSMContext):
-    lang = await get_user_language(message.from_user.id)
-    try:
-        date_obj = datetime.strptime(message.text.strip(), "%d.%m.%Y")
-        date_key = date_obj.strftime("%Y-%m-%d")
-        await show_day(message, date_key, lang)
-        await state.clear()
-    except ValueError:
-        await message.answer(t(lang, "date_invalid"))
-
-
-@router.message(F.text.in_([t("ru", "settings_btn"), t("en", "settings_btn")]))
-async def settings(message: Message, state: FSMContext):
-    lang = await get_user_language(message.from_user.id)
-    group = await get_user_group(message.from_user.id)
-    await message.answer(
-        t(lang, "settings", group=group or "—"),
-        parse_mode="HTML"
-    )
-    await state.set_state(Register.waiting_group)
-
-
-@router.message(F.text.in_([t("ru", "language_btn"), t("en", "language_btn")]))
-async def change_language(message: Message, state: FSMContext):
-    await state.set_state(Register.waiting_language)
-    await message.answer(
-        t("ru", "choose_lang"),
-        reply_markup=language_kb()
-    )
+    # Отправляем следующее сообщение
+    await callback.message.answer(f"Отлично! Теперь просто напиши мне номер группы текстом (например: 03_ФИИТ_26_02)")
