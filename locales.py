@@ -18,7 +18,7 @@ TEXTS = {
             "📋 <b>Группы / Groups</b> — список всех специальностей\n"
             "❓ <b>Помощь / Help</b> — подробный гайд\n\n"
             "🆘 <b>Нужна помощь? / Need help?</b>\n"
-            "Если вашей группы нет или бот работает некорректно, напишите: @your_tg_username\n\n"
+            "Если вашей группы нет или бот работает некорректно, напишите: @alexa_ash_avery\n\n"
             "👇 <b>Выберите язык / Choose language:</b>"
         ),
         "after_language": (
@@ -47,20 +47,20 @@ TEXTS = {
         "group_not_found": (
             "❌ <b>Группа не найдена в базе БФУ.</b>\n\n"
             "💡 Возможно, ты ошиблась в названии.\n"
-            "🆘 Если группы нет в списке, напиши: @your_tg_username\n\n"
+            "🆘 Если группы нет в списке, напиши: @alexa_ash_avery\n\n"
             "👇 <b>Попробуй ввести группу ещё раз:</b>"
         ),
         "fetch_error": (
             "❌ <b>Не удалось получить расписание.</b>\n\n"
             "💡 Возможно, сайт БФУ временно недоступен.\n"
-            "🆘 Если проблема не решается, напиши: @your_tg_username"
+            "🆘 Если проблема не решается, напиши: @alexa_ash_avery"
         ),
         "choose_lang": "🌍 <b>Выбери язык / Choose language:</b>",
         "lang_set": "✅ <b>Язык установлен: Русский</b>",
         "no_classes": "🎉 <b>Пар нет — можно отдыхать!</b>",
         "error_schedule": (
             "❌ <b>Ошибка получения расписания.</b>\n\n"
-            "🆘 Если проблема сохраняется, напиши: @your_tg_username"
+            "🆘 Если проблема сохраняется, напиши: @alexa_ash_avery"
         ),
         "settings": (
             "⚙️ <b>Настройки</b>\n\n"
@@ -91,7 +91,7 @@ TEXTS = {
             "• <code>/groups</code> — список всех групп БФУ\n"
             "• <code>/help</code> — показать это сообщение\n\n"
             "🆘 <b>Нужна помощь?</b>\n"
-            "Напишите: @your_tg_username"
+            "Напишите: @alexa_ash_avery"
         ),
     },
     "en": {
@@ -111,12 +111,12 @@ TEXTS = {
         ),
         "group_saved": "✅ <b>Group {group} saved!</b>\n\n🎯 Now choose what to show:",
         "group_invalid": "❌ <b>Invalid group number.</b>\n\n💡 Check the format: <code>03_ФИИТ_26_02</code>\n👇 <b>Try again:</b>",
-        "group_not_found": "❌ <b>Group not found in BFU database.</b>\n\n🆘 If your group is missing, contact: @your_tg_username\n\n👇 <b>Try entering the group again:</b>",
-        "fetch_error": "❌ <b>Could not fetch schedule.</b>\n\n🆘 If the problem persists, contact: @your_tg_username",
+        "group_not_found": "❌ <b>Group not found in BFU database.</b>\n\n🆘 If your group is missing, contact: @alexa_ash_avery\n\n👇 <b>Try entering the group again:</b>",
+        "fetch_error": "❌ <b>Could not fetch schedule.</b>\n\n🆘 If the problem persists, contact: @alexa_ash_avery",
         "choose_lang": "🌍 <b>Choose language / Выбери язык:</b>",
         "lang_set": "✅ <b>Language set: English</b>",
         "no_classes": "🎉 <b>No classes today — enjoy your free time!</b>",
-        "error_schedule": "❌ <b>Error fetching schedule.</b>\n\n🆘 If the problem persists, contact: @your_tg_username",
+        "error_schedule": "❌ <b>Error fetching schedule.</b>\n\n🆘 If the problem persists, contact: @alexa_ash_avery",
         "settings": "⚙️ <b>Settings</b>\n\n📚 <b>Current group:</b> {group}\n\n👇 <b>Enter new group number:</b>",
         "today": "📅 Today",
         "tomorrow": "📆 Tomorrow",
@@ -138,7 +138,7 @@ TEXTS = {
             "• <code>/groups</code> — show all BFU groups\n"
             "• <code>/help</code> — show this message\n\n"
             "🆘 <b>Need help?</b>\n"
-            "Contact: @your_tg_username"
+            "Contact: @alexa_ash_avery"
         ),
     }
 }
