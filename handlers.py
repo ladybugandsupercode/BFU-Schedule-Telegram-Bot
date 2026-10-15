@@ -93,12 +93,13 @@ async def cmd_reset(message: Message, state: FSMContext):
     await set_user_language(message.from_user.id, "ru")
     await state.clear()
     await state.set_state(Register.waiting_language)
+    
+    # Теперь это ОДНО чистое сообщение без лишнего текста
     await message.answer(
         t("ru", "reset_success"),
         reply_markup=language_kb(),
         parse_mode="HTML"
     )
-
 
 @router.message(Command("help"))
 async def cmd_help(message: Message):
