@@ -46,7 +46,7 @@ TEXTS = {
         ),
         "group_not_found": (
             "❌ <b>Группа не найдена в базе БФУ.</b>\n\n"
-            "💡 Возможно, ты ошиблась в названии.\n"
+            "💡 Возможно, ты ошибся в названии.\n"
             "🆘 Если группы нет в списке, напиши: @alexa_ash_avery\n\n"
             "👇 <b>Попробуй ввести группу ещё раз:</b>"
         ),
@@ -93,6 +93,29 @@ TEXTS = {
             "🆘 <b>Нужна помощь?</b>\n"
             "Напишите: @alexa_ash_avery"
         ),
+                "help_message": (
+            "❓ <b>Помощь / Help</b>\n\n"
+            "📚 <b>Основные команды:</b>\n"
+            "• <code>/start</code> — начать работу с ботом\n"
+            "• <code>/reset</code> — сбросить настройки\n"
+            "• <code>/groups</code> — список всех групп БФУ\n"
+            "• <code>/help</code> — показать это сообщение\n\n"
+            "🆘 <b>Нужна помощь?</b>\n"
+            "Напишите: @alexa_ash_avery"
+        ),
+        "groups_message": (
+            "📋 <b>Список всех групп БФУ</b>\n\n"
+            "🔗 <b>Посмотри на сайте:</b> https://schedule.kantiana.ru/\n\n"
+            "💡 <b>Как найти свою группу:</b>\n"
+            "1️⃣ Открой сайт\n"
+            "2️⃣ Выбери свой институт/колледж\n"
+            "3️⃣ Найди направление и курс\n"
+            "4️⃣ Скопируй название группы (например, <code>03_ФИИТ_26_02</code>)\n"
+            "5️⃣ Введи его сюда\n\n"
+            "🆘 <b>Не можешь найти?</b>\n"
+            "Напиши: @alexa_ash_avery"
+        ),
+    },
     },
     "en": {
         "after_language": "✅ <b>Great!</b>\n\n👇 <b>Choose an action:</b>",
@@ -138,6 +161,18 @@ TEXTS = {
             "• <code>/groups</code> — show all BFU groups\n"
             "• <code>/help</code> — show this message\n\n"
             "🆘 <b>Need help?</b>\n"
+            "Contact: @alexa_ash_avery"
+        ),
+        "groups_message": (
+            "📋 <b>List of all BFU groups</b>\n\n"
+            "🔗 <b>Check the website:</b> https://schedule.kantiana.ru/\n\n"
+            "💡 <b>How to find your group:</b>\n"
+            "1️⃣ Open the website\n"
+            "2️⃣ Choose your institute/college\n"
+            "3️⃣ Find your program and year\n"
+            "4️⃣ Copy the group name (e.g., <code>03_ФИИТ_26_02</code>)\n"
+            "5️⃣ Enter it here\n\n"
+            "🆘 <b>Can't find it?</b>\n"
             "Contact: @alexa_ash_avery"
         ),
     }
