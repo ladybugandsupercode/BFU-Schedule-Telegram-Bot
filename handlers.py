@@ -138,7 +138,7 @@ async def cmd_groups(message: Message):
         "💡 <b>Полный список очень большой!</b>\n"
         "📌 Введи свою группу в формате: <code>03_ФИИТ_26_02</code>\n\n"
         "🆘 <b>Не нашёл свою группу?</b>\n"
-        "Напишите в поддержку: @your_username"
+        "Напишите в поддержку: @alexa_ash_avery"
     )
     await message.answer(groups_text, parse_mode="HTML")
 
