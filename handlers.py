@@ -7,6 +7,9 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message, CallbackQuery
+from aiogram import types
+
+log = logging.getLogger(__name__)
 
 from config import CACHE_TTL_MINUTES
 from database import (
@@ -321,3 +324,15 @@ async def show_groups(message: Message):
 @router.message(F.text.in_([t("ru", "help_btn"), t("en", "help_btn")]))
 async def show_help(message: Message):
     await cmd_help(message)
+
+@router.callback_query()
+async def fallback_callback(call: types.CallbackQuery, state: FSMContext):
+    log.warning("Необработанная кнопка: data=%r, state=%r",
+                call.data, await state.get_state())
+    await call.answer("Кнопка устарела, нажми /start", show_alert=True)
+
+@router.message()
+async def fallback_message(message: types.Message, state: FSMContext):
+    log.warning("Необработанное сообщение: text=%r, state=%r",
+                message.text, await state.get_state())
+    await message.answer("Не понял 🤔 Нажми /start, чтобы вернуться в меню")
