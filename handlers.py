@@ -8,6 +8,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message, CallbackQuery
 from aiogram import types
+from dedupe import DedupeMiddleware
 
 log = logging.getLogger(__name__)
 
@@ -23,6 +24,7 @@ from locales import t
 logger = logging.getLogger(__name__)
 router = Router()
 
+router.message.outer_middleware(DedupeMiddleware())
 
 class Register(StatesGroup):
     waiting_group = State()
