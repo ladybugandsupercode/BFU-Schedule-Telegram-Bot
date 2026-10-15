@@ -68,18 +68,20 @@ async def get_schedule_for_user(telegram_id: int, force_refresh: bool = False) -
 @router.message(Command("start"))
 async def cmd_start(message: Message, state: FSMContext):
     group = await get_user_group(message.from_user.id)
-    lang = await get_user_language(message.from_user.id)
     
     if group:
+        # Если группа уже есть, показываем обычное приветствие на выбранном языке
+        lang = await get_user_language(message.from_user.id)
         await message.answer(
             t(lang, "welcome_back", group=group),
-            reply_markup=action_kb(lang),
+            reply_markup=main_menu_kb(lang),
             parse_mode="HTML"
         )
     else:
+        # Если группы нет (новый пользователь), показываем двуязычное приветствие
         await state.set_state(Register.waiting_language)
         await message.answer(
-            t(lang, "welcome"),
+            t("ru", "welcome_bilingual"), # Берём из ru, так как там уже два языка
             reply_markup=language_kb(),
             parse_mode="HTML"
         )
