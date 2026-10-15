@@ -140,7 +140,7 @@ async def action_choose_group(callback: CallbackQuery, state: FSMContext):
     await state.set_state(Register.waiting_group)
     await callback.answer()
     await callback.message.answer(
-        t(lang, "enter_group"),
+        t(lang, "groups_text"),
         parse_mode="HTML"
     )
 
