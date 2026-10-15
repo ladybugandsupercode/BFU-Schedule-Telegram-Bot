@@ -116,7 +116,6 @@ TEXTS = {
             "Напиши: @alexa_ash_avery"
         ),
     },
-    },
     "en": {
         "after_language": "✅ <b>Great!</b>\n\n👇 <b>Choose an action:</b>",
         "enter_group": (
