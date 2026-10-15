@@ -60,6 +60,18 @@ async def get_schedule_for_user(telegram_id: int, force_refresh: bool = False) -
         await save_cached_schedule(telegram_id, json.dumps(data), int(time.time()))
     return data
 
+@router.message(Command("reset"))
+async def cmd_reset(message: Message, state: FSMContext):
+    """Сбрасывает все данные пользователя и начинает онбординг заново."""
+    from database import set_user_group, set_user_language
+    await set_user_group(message.from_user.id, "")
+    await set_user_language(message.from_user.id, "ru")
+    await state.clear()
+    await message.answer(
+        "🔄 Данные сброшены! Давай начнём заново.\n\n" + t("ru", "welcome"),
+        reply_markup=language_kb(),
+        parse_mode="HTML"
+    )
 
 @router.message(Command("start"))
 async def cmd_start(message: Message, state: FSMContext):
