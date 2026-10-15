@@ -1,215 +1,162 @@
 TEXTS = {
     "ru": {
-        "welcome": (
-            "👋 <b>Привет! Я — бот расписания БФУ им. И. Канта.</b>\n\n"
-            "🎓 <b>Я помогу тебе:</b>\n"
-            "• 📅 Узнать расписание на сегодня/завтра\n"
-            "• 🗓 Посмотреть расписание на всю неделю\n"
-            "• 📆 Найти пары на любую дату\n"
-            "• 📋 Получить список всех групп БФУ\n\n"
-            "🎯 <b>Как пользоваться:</b>\n"
-            "1️⃣ Выбери язык\n"
-            "2️⃣ Введи номер своей группы\n"
-            "3️⃣ Нажимай кнопки меню для просмотра расписания\n\n"
-            "🌟 <b>Давай начнём!</b> Сначала выбери язык:"
+        "welcome_bilingual": (
+            "👋 **Привет! / Hello!**\n\n"
+            "🎓 **Я — бот расписания БФУ им. И. Канта.**\n"
+            "🎓 **I am the BFU Im. Kant schedule bot.**\n\n"
+            "📋 **Как пользоваться / How to use:**\n"
+            "1️⃣ Выбери язык / Choose language\n"
+            "2️⃣ Введи номер группы / Enter group number\n"
+            "3️⃣ Смотри расписание / Check schedule\n\n"
+            "⚙️ **Кнопки меню / Menu buttons:**\n"
+            "📅 **Сегодня / Today** — пары на сегодня\n"
+            "📆 **Завтра / Tomorrow** — пары на завтра\n"
+            "🗓 **На неделю / Week** — расписание на 7 дней\n"
+            "📆 **Дата / Date** — расписание на конкретный день\n"
+            "⚙️ **Настройки / Settings** — сменить группу\n"
+            "🌍 **Язык / Language** — сменить язык\n"
+            "📋 **Группы / Groups** — список всех специальностей\n"
+            "❓ **Помощь / Help** — подробный гайд\n\n"
+            "🆘 **Нужна помощь? / Need help?**\n"
+            "Если вашей группы нет или бот работает некорректно, напишите: @your_tg_username\n"
+            "If your group is missing or the bot malfunctions, contact: @your_tg_username\n\n"
+            "👇 **Выберите язык / Choose language:**"
         ),
         "after_language": (
-            "✅ <b>Отлично!</b>\n\n"
-            "🎯 <b>Что дальше?</b>\n\n"
-            "📝 <b>Выбери действие:</b>"
+            "✅ **Отлично! / Great!**\n\n"
+            "🎯 **Что дальше? / What's next?**\n\n"
+            "📝 **Выбери действие / Choose an action:**"
         ),
         "enter_group": (
-            "📚 <b>Введи номер своей академической группы.</b>\n\n"
-            "💡 <b>Формат:</b> <code>уровень_направление_год_номер</code>\n"
-            "📌 <b>Пример:</b> <code>03_ФИИТ_26_02</code>\n\n"
-            "🔍 <b>Расшифровка:</b>\n"
-            "• <b>03</b> — уровень образования (бакалавриат)\n"
-            "• <b>ФИИТ</b> — направление подготовки\n"
-            "• <b>26</b> — год поступления (2026)\n"
-            "• <b>02</b> — номер группы\n\n"
-            "📋 <b>Не знаешь свою группу?</b>\n"
-            "Напиши /groups — покажу список всех специальностей БФУ\n\n"
-            "⚠️ <b>Важно:</b> Вводи группу <b>точно</b> как в зачётке!\n\n"
-            "👇 <b>Введи свою группу:</b>"
+            "📚 **Введи номер своей академической группы.**\n\n"
+            "💡 **Формат:** `уровень_направление_год_номер`\n"
+            "📌 **Пример:** `03_ФИИТ_26_02`\n\n"
+            "🔍 **Расшифровка:**\n"
+            "• **03** — уровень образования (бакалавриат)\n"
+            "• **ФИИТ** — направление подготовки\n"
+            "• **26** — год поступления (2026)\n"
+            "• **02** — номер группы\n\n"
+            "📋 **Не знаешь свою группу?**\n"
+            "Нажми кнопку '📋 Группы' или напиши /groups\n\n"
+            "⚠️ **Важно:** Вводи группу точно как в зачётке!\n\n"
+            "👇 **Введи свою группу:**"
         ),
-        "group_saved": "✅ <b>Группа {group} сохранена!</b>\n\n🎯 Теперь выбери, что показать:",
+        "group_saved": "✅ **Группа {group} сохранена!**\n\n🎯 Теперь выбери, что показать:",
         "group_invalid": (
-            "❌ <b>Группа указана неверно.</b>\n\n"
-            "💡 Проверь формат: <code>03_ФИИТ_26_02</code>\n"
-            "📋 Или напиши /groups для списка специальностей\n\n"
-            "👇 <b>Попробуй ещё раз:</b>"
+            "❌ **Группа указана неверно.**\n\n"
+            "💡 Проверь формат: `03_ФИИТ_26_02`\n"
+            "📋 Или нажми кнопку '📋 Группы'\n\n"
+            "👇 **Попробуй ещё раз:**"
         ),
         "group_not_found": (
-            "❌ <b>Группа не найдена в базе БФУ.</b>\n\n"
+            "❌ **Группа не найдена в базе БФУ.**\n\n"
             "💡 Возможно, ты ошибся в названии.\n"
-            "📋 Напиши /groups — покажу список всех групп\n\n"
-            "🆘 <b>Если вашей группы нет в списке</b> или она не отображается:\n"
-            "Напишите в поддержку: @alexa_ash_avery\n\n"
-            "👇 <b>Попробуй ввести группу ещё раз:</b>"
+            "📋 Нажми кнопку '📋 Группы' для проверки\n\n"
+            "🆘 **Если вашей группы нет в списке:**\n"
+            "Напишите: @your_tg_username\n\n"
+            "👇 **Попробуй ввести группу ещё раз:**"
         ),
         "fetch_error": (
-            "❌ <b>Не удалось получить расписание.</b>\n\n"
-            "💡 Возможно, группа указана неверно или сайт БФУ временно недоступен.\n"
-            "📋 Напиши /groups для проверки списка групп\n\n"
-            "🆘 <b>Если проблема не решается:</b>\n"
-            "Напишите в поддержку: @alexa_ash_avery"
+            "❌ **Не удалось получить расписание.**\n\n"
+            "💡 Возможно, группа указана неверно или сайт БФУ временно недоступен.\n\n"
+            "🆘 **Если проблема не решается:**\n"
+            "Напишите: @your_tg_username"
         ),
-        "choose_lang": "🌍 <b>Выбери язык / Choose language:</b>",
-        "lang_set": "✅ <b>Язык установлен: Русский</b>",
-        "no_classes": "🎉 <b>Пар нет — можно отдыхать!</b>",
+        "choose_lang": "🌍 **Выбери язык / Choose language:**",
+        "lang_set": "✅ **Язык установлен: Русский**",
+        "no_classes": "🎉 **Пар нет — можно отдыхать!**",
         "error_schedule": (
-            "❌ <b>Ошибка получения расписания.</b>\n\n"
-            "💡 Попробуй позже или проверь группу командой /groups\n\n"
-            "🆘 <b>Если проблема сохраняется:</b>\n"
-            "Напишите в поддержку: @alexa_ash_avery"
+            "❌ **Ошибка получения расписания.**\n\n"
+            "💡 Попробуй позже или проверь группу\n\n"
+            "🆘 **Если проблема сохраняется:**\n"
+            "Напишите: @your_tg_username"
         ),
         "settings": (
-            "⚙️ <b>Настройки</b>\n\n"
-            "📚 <b>Текущая группа:</b> {group}\n\n"
-            "👇 <b>Введи новый номер группы:</b>"
+            "⚙️ **Настройки**\n\n"
+            "📚 **Текущая группа:** {group}\n\n"
+            "👇 **Введи новый номер группы:**"
         ),
         "today": "📅 Сегодня",
         "tomorrow": "📆 Завтра",
         "week": "🗓 На неделю",
-        "custom_date": "📆 Выбрать дату",
+        "custom_date": "📆 Дата",
         "settings_btn": "⚙️ Настройки",
         "language_btn": "🌍 Язык",
-        "groups_btn": "📋 Список групп",
+        "groups_btn": "📋 Группы",
         "help_btn": "❓ Помощь",
-        "enter_date": "📅 <b>Введи дату в формате <code>ДД.ММ.ГГГГ</code></b>\n\n📌 <b>Пример:</b> <code>15.10.2026</code>",
-        "date_invalid": "❌ <b>Неверный формат даты.</b>\n\n💡 Правильный формат: <code>ДД.ММ.ГГГГ</code>\n📌 Пример: <code>15.10.2026</code>",
+        "enter_date": "📅 **Введи дату в формате `ДД.ММ.ГГГГ`**\n\n📌 **Пример:** `15.10.2026`",
+        "date_invalid": "❌ **Неверный формат даты.**\n\n💡 Правильный формат: `ДД.ММ.ГГГГ`\n📌 Пример: `15.10.2026`",
         "welcome_back": (
-            "👋 <b>С возвращением!</b>\n\n"
-            "🎓 <b>Твоя группа:</b> {group}\n\n"
-            "🎯 <b>Выбери действие:</b>"
+            "👋 **С возвращением!**\n\n"
+            "🎓 **Твоя группа:** {group}\n\n"
+            "🎯 **Выбери действие:**"
         ),
-        "reset_success": "🔄 <b>Данные сброшены!</b>\n\n🎯 Давай начнём заново.\n\n🌍 <b>Выбери язык:</b>",
+        "reset_success": "🔄 **Данные сброшены!**\n\n🎯 Давай начнём заново.\n\n🌍 **Выбери язык:**",
         "help_message": (
-            "❓ <b>Помощь</b>\n\n"
-            "📚 <b>Основные команды:</b>\n"
-            "• /start — начать работу с ботом\n"
-            "• /reset — сбросить настройки и начать заново\n"
-            "• /groups — показать список всех групп БФУ\n"
-            "• /help — показать это сообщение\n\n"
-            "🎯 <b>Кнопки меню:</b>\n"
-            "• 📅 Сегодня — расписание на сегодня\n"
-            "• 📆 Завтра — расписание на завтра\n"
-            "• 🗓 На неделю — расписание на всю неделю\n"
-            "• 📆 Выбрать дату — расписание на конкретную дату\n"
-            "• ⚙️ Настройки — сменить группу\n"
-            "• 🌍 Язык — сменить язык\n"
-            "• 📋 Список групп — показать все специальности\n\n"
-            "🆘 <b>Нужна помощь?</b>\n"
-            "Напишите в поддержку: @alexa_ash_avery"
+            "❓ **Помощь / Help**\n\n"
+            "📚 **Основные команды:**\n"
+            "• `/start` — начать работу с ботом\n"
+            "• `/reset` — сбросить настройки и начать заново\n"
+            "• `/groups` — показать список всех групп БФУ\n"
+            "• `/help` — показать это сообщение\n\n"
+            "🆘 **Нужна помощь?**\n"
+            "Напишите: @your_tg_username"
         ),
     },
     "en": {
-        "welcome": (
-            "👋 <b>Hello! I'm the BFU Im. Kant schedule bot.</b>\n\n"
-            "🎓 <b>I'll help you:</b>\n"
-            "• 📅 Check today's/tomorrow's schedule\n"
-            "• 🗓 View the full week schedule\n"
-            "• 📆 Find classes for any specific date\n"
-            "• 📋 Get a list of all BFU groups\n\n"
-            "🎯 <b>How to use:</b>\n"
-            "1️⃣ Choose your language\n"
-            "2️⃣ Enter your group number\n"
-            "3️⃣ Use menu buttons to view schedules\n\n"
-            "🌟 <b>Let's start!</b> First, choose your language:"
-        ),
-        "after_language": (
-            "✅ <b>Great!</b>\n\n"
-            "🎯 <b>What's next?</b>\n\n"
-            "📝 <b>Choose an action:</b>"
-        ),
+        # Для английского мы используем те же ключи, но бот будет брать bilingual из 'ru' для первого экрана.
+        # Остальные сообщения будут на английском, если пользователь его выбрал.
+        "after_language": "✅ **Great!**\n\n🎯 **What's next?**\n\n📝 **Choose an action:**",
         "enter_group": (
-            "📚 <b>Enter your academic group number.</b>\n\n"
-            "💡 <b>Format:</b> <code>level_program_year_number</code>\n"
-            "📌 <b>Example:</b> <code>03_ФИИТ_26_02</code>\n\n"
-            "🔍 <b>Breakdown:</b>\n"
-            "• <b>03</b> — education level (bachelor's)\n"
-            "• <b>ФИИТ</b> — program of study\n"
-            "• <b>26</b> — enrollment year (2026)\n"
-            "• <b>02</b> — group number\n\n"
-            "📋 <b>Don't know your group?</b>\n"
-            "Type /groups — I'll show all BFU programs\n\n"
-            "⚠️ <b>Important:</b> Enter the group <b>exactly</b> as in your student ID!\n\n"
-            "👇 <b>Enter your group:</b>"
+            "📚 **Enter your academic group number.**\n\n"
+            "💡 **Format:** `level_program_year_number`\n"
+            "📌 **Example:** `03_ФИИТ_26_02`\n\n"
+            "🔍 **Breakdown:**\n"
+            "• **03** — education level (bachelor's)\n"
+            "• **ФИИТ** — program of study\n"
+            "• **26** — enrollment year (2026)\n"
+            "• **02** — group number\n\n"
+            "📋 **Don't know your group?**\n"
+            "Press '📋 Groups' button or type /groups\n\n"
+            "⚠️ **Important:** Enter the group exactly as in your student ID!\n\n"
+            "👇 **Enter your group:**"
         ),
-        "group_saved": "✅ <b>Group {group} saved!</b>\n\n🎯 Now choose what to show:",
-        "group_invalid": (
-            "❌ <b>Invalid group number.</b>\n\n"
-            "💡 Check the format: <code>03_ФИИТ_26_02</code>\n"
-            "📋 Or type /groups for the list of programs\n\n"
-            "👇 <b>Try again:</b>"
-        ),
-        "group_not_found": (
-            "❌ <b>Group not found in BFU database.</b>\n\n"
-            "💡 You might have made a typo.\n"
-            "📋 Type /groups to see all groups\n\n"
-            "🆘 <b>If your group is not in the list</b> or doesn't appear:\n"
-            "Contact support: @alexa_ash_avery\n\n"
-            "👇 <b>Try entering the group again:</b>"
-        ),
-        "fetch_error": (
-            "❌ <b>Could not fetch schedule.</b>\n\n"
-            "💡 The group might be incorrect or BFU website is temporarily unavailable.\n"
-            "📋 Type /groups to verify the group list\n\n"
-            "🆘 <b>If the problem persists:</b>\n"
-            "Contact support: @alexa_ash_avery"
-        ),
-        "choose_lang": "🌍 <b>Choose language / Выбери язык:</b>",
-        "lang_set": "✅ <b>Language set: English</b>",
-        "no_classes": "🎉 <b>No classes today — enjoy your free time!</b>",
-        "error_schedule": (
-            "❌ <b>Error fetching schedule.</b>\n\n"
-            "💡 Try again later or verify the group with /groups\n\n"
-            "🆘 <b>If the problem persists:</b>\n"
-            "Contact support: @alexa_ash_avery"
-        ),
-        "settings": (
-            "⚙️ <b>Settings</b>\n\n"
-            "📚 <b>Current group:</b> {group}\n\n"
-            "👇 <b>Enter new group number:</b>"
-        ),
+        "group_saved": "✅ **Group {group} saved!**\n\n🎯 Now choose what to show:",
+        "group_invalid": "❌ **Invalid group number.**\n\n💡 Check the format: `03_ФИИТ_26_02`\n👇 **Try again:**",
+        "group_not_found": "❌ **Group not found in BFU database.**\n\n💡 You might have made a typo.\n🆘 **If your group is missing:**\nContact: @your_tg_username\n\n👇 **Try entering the group again:**",
+        "fetch_error": "❌ **Could not fetch schedule.**\n\n💡 The group might be incorrect or BFU website is temporarily unavailable.\n🆘 **If the problem persists:**\nContact: @your_tg_username",
+        "choose_lang": "🌍 **Choose language / Выбери язык:**",
+        "lang_set": "✅ **Language set: English**",
+        "no_classes": "🎉 **No classes today — enjoy your free time!**",
+        "error_schedule": "❌ **Error fetching schedule.**\n\n💡 Try again later or verify the group.\n🆘 **If the problem persists:**\nContact: @your_tg_username",
+        "settings": "⚙️ **Settings**\n\n📚 **Current group:** {group}\n\n👇 **Enter new group number:**",
         "today": "📅 Today",
         "tomorrow": "📆 Tomorrow",
         "week": "🗓 Week",
-        "custom_date": "📆 Custom date",
+        "custom_date": "📆 Date",
         "settings_btn": "⚙️ Settings",
         "language_btn": "🌍 Language",
-        "groups_btn": "📋 Group list",
+        "groups_btn": "📋 Groups",
         "help_btn": "❓ Help",
-        "enter_date": "📅 <b>Enter date in format <code>DD.MM.YYYY</code></b>\n\n📌 <b>Example:</b> <code>15.10.2026</code>",
-        "date_invalid": "❌ <b>Invalid date format.</b>\n\n💡 Correct format: <code>DD.MM.YYYY</code>\n📌 Example: <code>15.10.2026</code>",
-        "welcome_back": (
-            "👋 <b>Welcome back!</b>\n\n"
-            "🎓 <b>Your group:</b> {group}\n\n"
-            "🎯 <b>Choose an action:</b>"
-        ),
-        "reset_success": "🔄 <b>Data reset!</b>\n\n🎯 Let's start over.\n\n🌍 <b>Choose language:</b>",
+        "enter_date": "📅 **Enter date in format `DD.MM.YYYY`**\n\n📌 **Example:** `15.10.2026`",
+        "date_invalid": "❌ **Invalid date format.**\n\n💡 Correct format: `DD.MM.YYYY`\n📌 Example: `15.10.2026`",
+        "welcome_back": "👋 **Welcome back!**\n\n🎓 **Your group:** {group}\n\n🎯 **Choose an action:**",
+        "reset_success": "🔄 **Data reset!**\n\n🎯 Let's start over.\n\n🌍 **Choose language:**",
         "help_message": (
-            "❓ <b>Help</b>\n\n"
-            "📚 <b>Main commands:</b>\n"
-            "• /start — start working with the bot\n"
-            "• /reset — reset settings and start over\n"
-            "• /groups — show all BFU groups\n"
-            "• /help — show this message\n\n"
-            "🎯 <b>Menu buttons:</b>\n"
-            "• 📅 Today — today's schedule\n"
-            "• 📆 Tomorrow — tomorrow's schedule\n"
-            "• 🗓 Week — full week schedule\n"
-            "• 📆 Custom date — schedule for a specific date\n"
-            "• ⚙️ Settings — change group\n"
-            "• 🌍 Language — change language\n"
-            "• 📋 Group list — show all programs\n\n"
-            "🆘 <b>Need help?</b>\n"
-            "Contact support: @alexa_ash_avery"
+            "❓ **Help**\n\n"
+            "📚 **Main commands:**\n"
+            "• `/start` — start working with the bot\n"
+            "• `/reset` — reset settings and start over\n"
+            "• `/groups` — show all BFU groups\n"
+            "• `/help` — show this message\n\n"
+            "🆘 **Need help?**\n"
+            "Contact: @your_tg_username"
         ),
     }
 }
 
 
 def t(lang: str, key: str, **kwargs) -> str:
-    text = TEXTS.get(lang, TEXTS["ru"]).get(key, key)
+    # Если ключа нет в выбранном языке, пробуем взять из русского (для fallback)
+    text = TEXTS.get(lang, TEXTS["ru"]).get(key, TEXTS["ru"].get(key, key))
     return text.format(**kwargs) if kwargs else text
