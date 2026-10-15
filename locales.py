@@ -80,7 +80,7 @@ TEXTS = {
             "🆘 <b>Нужна помощь?</b>\n"
             "Напишите супер-поддержке: @alexa_ash_avery"
         ),
-        "groups_message": (
+        "groups_text": (
             "📋 <b>Список всех групп БФУ</b>\n\n"
             "🔗 <b>Посмотри на сайте:</b> https://schedule.kantiana.ru/\n\n"
             "💡 <b>Как найти свою группу:</b>\n"
@@ -126,7 +126,7 @@ TEXTS = {
             "🆘 <b>Need help?</b>\n"
             "Contact our super-support: @alexa_ash_avery"
         ),
-        "groups_message": (
+        "groups_text": (
             "📋 <b>List of all BFU groups</b>\n\n"
             "🔗 <b>Check the website:</b> https://schedule.kantiana.ru/\n\n"
             "💡 <b>How to find your group:</b>\n"
