@@ -20,7 +20,10 @@ async def main():
     dp.include_router(router)
     
     print("✅ Бот запущен и слушает команды!")
-    await dp.start_polling(bot)
+    try:
+        await dp.start_polling(bot)
+    finally:
+        await bot.session.close()
 
 if __name__ == "__main__":
     asyncio.run(main())
