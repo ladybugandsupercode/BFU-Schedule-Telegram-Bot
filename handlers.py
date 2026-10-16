@@ -28,6 +28,7 @@ router = Router()
 
 router.message.outer_middleware(DedupeMiddleware())
 
+
 class Register(StatesGroup):
     waiting_group = State()
     waiting_language = State()
