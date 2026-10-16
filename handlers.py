@@ -413,3 +413,9 @@ async def cmd_changelog(message: Message):
         changelog_text += f"{description}\n\n"
     
     await message.answer(changelog_text, parse_mode="HTML")
+
+
+
+@router.message(F.text == "🆕 Что нового?")
+async def show_changelog(message: Message):
+    await cmd_changelog(message)
