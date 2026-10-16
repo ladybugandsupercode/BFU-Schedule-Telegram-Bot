@@ -96,7 +96,7 @@ TEXTS = {
     "en": {
         "after_language": "✅ <b>Great!</b>\n\n👇 <b>Choose an action:</b>",
         "group_saved": "✅ <b>Group {groups_text} saved!</b>\n\n🎯 Now choose what to show:",
-        "group_invalid": "❌ <b>Invalid group number.</b>\n\n💡 Check the format: <code>03_ФИИТ_26_02</code>\n👇 <b>Try again:</b>",
+        "group_invalid": "❌ <b>Invalid group number.</b>\n\n💡 Check the format: <code>03_ФИИТ_26_2</code>\n👇 <b>Try again:</b>",
         "group_not_found": "❌ <b>Group not found in BFU database.</b>\n\n🆘 If you have any suggestions for improvement or if the bot is not working correctly, please reach out to our super-support team: @alexa_ash_avery\n\n👇 <b>Try entering the group again:</b>",
         "fetch_error": "❌ <b>Could not fetch schedule.</b>\n\n🆘 If the problem persists, contact: @alexa_ash_avery",
         "choose_lang": "🌍 <b>Choose language / Выбери язык:</b>",
