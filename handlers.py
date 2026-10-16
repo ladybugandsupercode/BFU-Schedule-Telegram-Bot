@@ -119,7 +119,7 @@ async def cmd_help(message: Message):
 async def cmd_groups(message: Message):
     lang = await get_user_language(message.from_user.id)
     await message.answer(
-        t(lang, "groups_message"),
+        t(lang, "groups_text"),
         parse_mode="HTML"
     )
     await message.answer(groups_text, parse_mode="HTML")
