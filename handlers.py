@@ -9,6 +9,8 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message, CallbackQuery
 from aiogram import types
 from dedupe import DedupeMiddleware
+from version import BOT_VERSION, CHANGELOG
+
 
 log = logging.getLogger(__name__)
 
@@ -318,3 +320,96 @@ async def fallback_message(message: types.Message, state: FSMContext):
     log.warning("Необработанное сообщение: text=%r, state=%r",
                 message.text, await state.get_state())
     await message.answer("Не понял 🤔 Нажми /start, чтобы вернуться в меню")
+
+
+# === КОМАНДА ДЛЯ АДМИНА: МАССОВАЯ РАССЫЛКА ===
+ADMIN_TELEGRAM_ID = 5638577090  # Твой telegram_id
+
+@router.message(Command("broadcast"))
+async def cmd_broadcast(message: Message):
+    """Отправляет сообщение всем пользователям (только для админа)."""
+    if message.from_user.id != ADMIN_TELEGRAM_ID:
+        await message.answer("⛔ У вас нет прав для этой команды.")
+        return
+    
+    # Проверяем, есть ли текст после команды
+    args = message.text.split(maxsplit=1)
+    if len(args) < 2:
+        await message.answer(
+            "📢 <b>Использование:</b>\n"
+            "<code>/broadcast Текст сообщения</code>\n\n"
+            "Пример:\n"
+            "<code>/broadcast 🎉 Добавлена новая функция!</code>",
+            parse_mode="HTML"
+        )
+        return
+    
+    broadcast_text = args[1]
+    
+    # Получаем всех пользователей
+    from database import get_all_user_ids
+    user_ids = await get_all_user_ids()
+    
+    await message.answer(f"📤 Начинаю рассылку {len(user_ids)} пользователям...")
+    
+    success_count = 0
+    fail_count = 0
+    
+    for user_id in user_ids:
+        try:
+            await message.bot.send_message(user_id, broadcast_text, parse_mode="HTML")
+            success_count += 1
+        except Exception as e:
+            logger.warning(f"Не удалось отправить сообщение пользователю {user_id}: {e}")
+            fail_count += 1
+    
+    await message.answer(
+        f"✅ Рассылка завершена!\n"
+        f"📤 Успешно: {success_count}\n"
+        f"❌ Ошибок: {fail_count}"
+    )
+
+# === АВТОМАТИЧЕСКОЕ УВЕДОМЛЕНИЕ ПРИ ОБНОВЛЕНИИ ===
+@router.message(Command("start"))
+async def cmd_start(message: Message, state: FSMContext):
+    group = await get_user_group(message.from_user.id)
+    
+    # Проверяем, нужно ли показать уведомление об обновлении
+    from database import get_user_notified_version, set_user_notified_version
+    notified_version = await get_user_notified_version(message.from_user.id)
+    
+    if notified_version != BOT_VERSION and BOT_VERSION in CHANGELOG:
+        # Показываем информацию о новой версии
+        await message.answer(
+            CHANGELOG[BOT_VERSION],
+            parse_mode="HTML"
+        )
+        # Отмечаем, что пользователь уведомлен
+        await set_user_notified_version(message.from_user.id, BOT_VERSION)
+    
+    if group:
+        lang = await get_user_language(message.from_user.id)
+        await message.answer(
+            t(lang, "welcome_back", group=group),
+            reply_markup=main_menu_kb(lang),
+            parse_mode="HTML"
+        )
+    else:
+        await state.set_state(Register.waiting_language)
+        await message.answer(
+            t("ru", "welcome_bilingual"),
+            reply_markup=language_kb(),
+            parse_mode="HTML"
+        )
+
+# === КОМАНДА /CHANGELOG ===
+@router.message(Command("changelog"))
+async def cmd_changelog(message: Message):
+    """Показывает историю изменений."""
+    lang = await get_user_language(message.from_user.id)
+    
+    changelog_text = "📋 <b>История изменений:</b>\n\n"
+    for version, description in CHANGELOG.items():
+        changelog_text += f"{description}\n\n"
+    
+    await message.answer(changelog_text, parse_mode="HTML")
