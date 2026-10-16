@@ -22,8 +22,8 @@ TEXTS = {
             "👇 <b>Выберите язык / Choose language:</b>"
         ),
         "after_language": (
-            "✅ <b>Отлично! / Great!</b>\n\n"
-            "👇 <b>Выберите действие / Choose an action:</b>"
+            "✅ <b>Отлично!</b>\n\n"
+            "👇 <b>Выберите действие:</b>"
         ),
         "group_saved": "✅ <b>Группа {groups_text} сохранена!</b>\n\n🎯 Теперь выбери, что показать:",
         "group_invalid": (
