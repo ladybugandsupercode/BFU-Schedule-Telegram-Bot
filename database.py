@@ -66,3 +66,30 @@ async def get_cached_schedule(telegram_id: int) -> tuple[str | None, int | None]
         async with db.execute("SELECT last_cached_schedule, cache_updated_at FROM users WHERE telegram_id=?", (telegram_id,)) as cursor:
             row = await cursor.fetchone()
             return (row[0], row[1]) if row else (None, None)
+
+# === СИСТЕМА УВЕДОМЛЕНИЙ ===
+
+async def get_all_user_ids() -> list[int]:
+    """Получает список всех telegram_id пользователей."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        async with db.execute("SELECT telegram_id FROM users WHERE student_group != ''") as cursor:
+            rows = await cursor.fetchall()
+            return [row[0] for row in rows]
+
+async def get_user_notified_version(telegram_id: int) -> str | None:
+    """Получает версию, о которой пользователь уже уведомлен."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        async with db.execute(
+            "SELECT notified_version FROM users WHERE telegram_id=?", 
+            (telegram_id,)
+        ) as cursor:
+            row = await cursor.fetchone()
+            return row[0] if row and len(row) > 0 else None
+
+async def set_user_notified_version(telegram_id: int, version: str):
+    """Отмечает, что пользователь уведомлен о данной версии."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("""
+            UPDATE users SET notified_version=? WHERE telegram_id=?
+        """, (version, telegram_id))
+        await db.commit()
