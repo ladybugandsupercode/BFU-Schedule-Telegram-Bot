@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 BASE_API_URL = "https://schedule.kantiana.ru/v1/api/lessons/group"
 
-async def fetch_schedule(group: str) -> dict | None:
+async def fetch_schedule(groups_text: str) -> dict | None:
     today = datetime.now()
     monday = today - timedelta(days=today.weekday())
     sunday = monday + timedelta(days=6)
@@ -15,7 +15,7 @@ async def fetch_schedule(group: str) -> dict | None:
     date_from = monday.strftime("%Y-%m-%d")
     date_to = sunday.strftime("%Y-%m-%d")
     
-    encoded_group = quote(group)
+    encoded_group = quote(groups_text)
     url = f"{BASE_API_URL}?group={encoded_group}&date_from={date_from}&date_to={date_to}"
     logger.info(f"Fetching schedule: {url}")
 
@@ -42,7 +42,7 @@ async def fetch_schedule(group: str) -> dict | None:
                     logger.error(f"Ответ сервера при 403: {text[:300]}")
                     return None
                 elif resp.status != 200:
-                    logger.error(f"❌ HTTP {resp.status} for group {group}")
+                    logger.error(f"❌ HTTP {resp.status} for group {groups_text}")
                     return None
                 
                 data = await resp.json()
