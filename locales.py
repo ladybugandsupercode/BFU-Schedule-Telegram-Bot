@@ -18,7 +18,7 @@ TEXTS = {
             "   📋 <b>Группы / Groups</b> — список всех специальностей\n"
             "   ❓ <b>Помощь / Help</b> — подробный гайд\n\n"
             "   🆘 <b>Нужна помощь? / Need help?</b>\n"
-            "Если вашей группы нет или бот работает некорректно, напишите в нашу супер-поддержку: @alexa_ash_avery\n\n"
+            "Если у вас есть предложения по улучшению или бот работает некорректно, напишите в нашу супер-поддержку: @alexa_ash_avery\n\n"
             "👇 <b>Выберите язык / Choose language:</b>"
         ),
         "after_language": (
@@ -82,7 +82,7 @@ TEXTS = {
         ),
         "groups_text": (
             "📋 <b>Список всех групп БФУ</b>\n\n"
-            "🔗 <b>Посмотри на сайте:</b> https://schedule.kantiana.ru/\n\n"
+            "🔗 <b>Посмотри на сайте:</b> https://schedule.kantiana.ru\n\n"
             "💡 <b>Как найти свою группу:</b>\n"
             "   1️⃣ Открой сайт\n"
             "   2️⃣ Выбери свой институт/колледж\n"
@@ -97,7 +97,7 @@ TEXTS = {
         "after_language": "✅ <b>Great!</b>\n\n👇 <b>Choose an action:</b>",
         "group_saved": "✅ <b>Group {groups_text} saved!</b>\n\n🎯 Now choose what to show:",
         "group_invalid": "❌ <b>Invalid group number.</b>\n\n💡 Check the format: <code>03_ФИИТ_26_02</code>\n👇 <b>Try again:</b>",
-        "group_not_found": "❌ <b>Group not found in BFU database.</b>\n\n🆘 If your group is missing, contact: @alexa_ash_avery\n\n👇 <b>Try entering the group again:</b>",
+        "group_not_found": "❌ <b>Group not found in BFU database.</b>\n\n🆘 If you have any suggestions for improvement or if the bot is not working correctly, please reach out to our super-support team: @alexa_ash_avery\n\n👇 <b>Try entering the group again:</b>",
         "fetch_error": "❌ <b>Could not fetch schedule.</b>\n\n🆘 If the problem persists, contact: @alexa_ash_avery",
         "choose_lang": "🌍 <b>Choose language / Выбери язык:</b>",
         "lang_set": "✅ <b>Language set: English</b>",
