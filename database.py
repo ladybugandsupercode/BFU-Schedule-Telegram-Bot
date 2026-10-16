@@ -19,6 +19,16 @@ async def init_db():
             """)
             await db.commit()
             logger.info("✅ База данных успешно инициализирована")
+            await db.execute("""
+                CREATE TABLE IF NOT EXISTS users (
+                    telegram_id INTEGER PRIMARY KEY,
+                    student_group TEXT,
+                    language TEXT DEFAULT 'ru',
+                    last_cached_schedule TEXT,
+                    cache_updated_at INTEGER DEFAULT 0,
+                    notified_version TEXT DEFAULT NULL
+                )
+            """)
     except Exception as e:
         logger.error(f"❌ Ошибка инициализации БД: {e}")
         raise
