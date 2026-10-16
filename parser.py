@@ -18,7 +18,7 @@ async def fetch_schedule(group: str) -> dict | None:
     
     encoded_group = quote(group)
     url = f"{BASE_API_URL}?group={encoded_group}&date_from={date_from}&date_to={date_to}"
-    logger.info(f"Fetching schedule: {url}")
+    logger.info(f"Целевой URL: {url}")
 
     headers = {
         "Accept": "application/json, text/plain, */*",
@@ -31,13 +31,20 @@ async def fetch_schedule(group: str) -> dict | None:
     }
 
     try:
+        # impersonate="chrome120" заставляет библиотеку копировать отпечатки Chrome
         async with AsyncSession(impersonate="chrome120") as session:
-            logger.info("Отправляем запрос через curl_cffi (Chrome 120 mode)...")
+            
+            # ШАГ 1: Заходим на главную страницу, чтобы сервер выдал нам cookies и "прогрел" сессию
+            logger.info("🍪 Заходим на главную страницу для получения cookies...")
+            await session.get("https://schedule.kantiana.ru/", timeout=15)
+            
+            # ШАГ 2: Делаем запрос к API, используя те же cookies и заголовки
+            logger.info("📡 Отправляем запрос к API расписания...")
             response = await session.get(url, headers=headers, timeout=30)
             
             if response.status_code != 200:
-                logger.error(f"❌ HTTP {response.status_code} for group {group}")
-                logger.error(f"Ответ сервера: {response.text[:300]}")
+                logger.error(f"❌ HTTP {response.status_code} для группы {group}")
+                logger.error(f"Ответ сервера: {response.text[:500]}")
                 return None
             
             data = response.json()
@@ -63,6 +70,7 @@ def parse_lessons_data(data: dict | list) -> dict:
             
         date_key = str(date_str)[:10]
         
+        # 1. Время: объединяем начало и конец (например, "10:10 - 11:40")
         start_time = lesson.get("start_time", "")
         end_time = lesson.get("end_time", "")
         if start_time and end_time:
@@ -70,20 +78,24 @@ def parse_lessons_data(data: dict | list) -> dict:
         else:
             time_str = start_time[:5] if start_time else "—"
         
+        # 2. Предмет: название + тип занятия
         discipline = lesson.get("discipline", "Неизвестный предмет")
         load = lesson.get("load", "")
         subject = f"{discipline} ({load})" if load else discipline
         
+        # 3. Преподаватель: берем краткое имя (short), если есть
         teacher_obj = lesson.get("teacher", {})
         if isinstance(teacher_obj, dict):
             teacher = teacher_obj.get("short") or teacher_obj.get("name", "—")
         else:
             teacher = str(teacher_obj) if teacher_obj else "—"
             
+        # 4. Аудитория: приоритет у beautiful_room или short_room
         room = lesson.get("beautiful_room") or lesson.get("short_room") or lesson.get("room", "—")
-        if not room or room == "null" or room == "":
+        if not room or str(room).lower() == "null" or room == "":
             room = "Аудитория не указана"
             
+        # 5. Подгруппа
         subgroup = lesson.get("subgroup", "")
         subgroup_text = f" | {subgroup}" if subgroup and subgroup != "Общая" else ""
         
@@ -97,6 +109,7 @@ def parse_lessons_data(data: dict | list) -> dict:
             "room": room
         })
         
+    # Сортируем пары по времени в каждом дне
     for date_key in schedule:
         schedule[date_key].sort(key=lambda x: x["time"])
         
