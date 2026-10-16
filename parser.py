@@ -63,7 +63,6 @@ def parse_lessons_data(data: dict | list) -> dict:
             
         date_key = str(date_str)[:10]
         
-        # 1. Время: объединяем начало и конец (например, "10:10 - 11:40")
         start_time = lesson.get("start_time", "")
         end_time = lesson.get("end_time", "")
         if start_time and end_time:
@@ -71,24 +70,20 @@ def parse_lessons_data(data: dict | list) -> dict:
         else:
             time_str = start_time[:5] if start_time else "—"
         
-        # 2. Предмет: название + тип занятия
         discipline = lesson.get("discipline", "Неизвестный предмет")
         load = lesson.get("load", "")
         subject = f"{discipline} ({load})" if load else discipline
         
-        # 3. Преподаватель: берем краткое имя (short), если есть
         teacher_obj = lesson.get("teacher", {})
         if isinstance(teacher_obj, dict):
             teacher = teacher_obj.get("short") or teacher_obj.get("name", "—")
         else:
             teacher = str(teacher_obj) if teacher_obj else "—"
             
-        # 4. Аудитория: приоритет у beautiful_room или short_room
         room = lesson.get("beautiful_room") or lesson.get("short_room") or lesson.get("room", "—")
         if not room or room == "null" or room == "":
             room = "Аудитория не указана"
             
-        # 5. Подгруппа (очень полезно для студентов!)
         subgroup = lesson.get("subgroup", "")
         subgroup_text = f" | {subgroup}" if subgroup and subgroup != "Общая" else ""
         
@@ -102,7 +97,6 @@ def parse_lessons_data(data: dict | list) -> dict:
             "room": room
         })
         
-    # Сортируем пары по времени в каждом дне
     for date_key in schedule:
         schedule[date_key].sort(key=lambda x: x["time"])
         
