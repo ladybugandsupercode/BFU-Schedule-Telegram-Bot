@@ -337,31 +337,29 @@ async def show_week(message: Message):
             await message.answer(format_day(d, schedule.get(d, []), lang), parse_mode="HTML")
 
 
-@router.message(F.text.in_([t("ru", "next_week"), t("en", "next_week")]))
+@router.message(F.text.in_([
+    t("ru", "next_week"), t("en", "next_week"),
+    t("ru", "next_week_btn"), t("en", "next_week_btn"),
+]))
 async def show_next_week(message: Message):
     lang = await get_user_language(message.from_user.id)
-    
-    # Вычисляем понедельник следующей недели
+
+    # Понедельник следующей недели
     today = today_date()
-    days_until_next_monday = 7 - today.weekday()
-    next_monday = today + timedelta(days=days_until_next_monday)
-    
+    next_monday = today + timedelta(days=7 - today.weekday())
+
     schedule = await get_schedule_for_user(message.from_user.id, next_monday)
     if schedule is None:
         await message.answer(t(lang, "error_schedule"), parse_mode="HTML")
         return
-        
-    # Получаем даты именно для следующей недели
-    from parser import get_week_dates
+
     days = get_week_dates(next_monday)
     parts = [format_day(d, schedule.get(d, []), lang) for d in days]
     full = "\n\n".join(parts)
 
-    # Если текст слишком длинный, разбиваем на сообщения по дням
     if len(full) <= 4000:
         await message.answer(full, parse_mode="HTML")
     else:
-        await message.answer(f"<b>⚠️ Расписание на неделю слишком длинное, отправляю по дням:</b>", parse_mode="HTML")
         for d in days:
             await message.answer(format_day(d, schedule.get(d, []), lang), parse_mode="HTML")
 
