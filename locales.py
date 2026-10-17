@@ -1,37 +1,46 @@
+# locales.py
+
 import logging
 
 logger = logging.getLogger(__name__)
 
+# Эти два текста одинаковы для обоих языков: в них сразу и русский, и английский,
+# потому что пользователь ещё не выбрал язык.
+WELCOME_BILINGUAL = (
+    "👋 <b>Привет! / Hello!</b>\n\n"
+    "🎓 <b>Я — бот расписания БФУ им. И. Канта.</b>\n"
+    "🎓 <b>I am the BFU Im. Kant schedule bot.</b>\n\n"
+    "📋 <b>Как пользоваться / How to use:</b>\n"
+    " 1️⃣ Выбери язык / Choose language\n"
+    " 2️⃣ Введи номер группы / Enter group number\n"
+    " 3️⃣ Смотри расписание / Check schedule\n\n"
+    "⚙️ <b>Кнопки меню / Menu buttons:</b>\n"
+    " 📅 <b>Сегодня / Today</b> — пары на сегодня / today's classes\n"
+    " 📆 <b>Завтра / Tomorrow</b> — пары на завтра / tomorrow's classes\n"
+    " 🗓 <b>На неделю / Week</b> — расписание на неделю / schedule for the week\n"
+    " 📆 <b>Дата / Date</b> — любая дата: прошлая или будущая / any date, past or future\n"
+    " ⚙️ <b>Настройки / Settings</b> — сменить группу / change group\n"
+    " 🌍 <b>Язык / Language</b> — сменить язык / change language\n"
+    " 📋 <b>Группы / Groups</b> — список специальностей / list of programs\n"
+    " ❓ <b>Помощь / Help</b> — подробный гайд / detailed guide\n\n"
+    " 🆘 <b>Нужна помощь? / Need help?</b>\n"
+    "Если вашей группы нет или бот работает некорректно, напишите в нашу супер-поддержку / "
+    "If your group is missing or the bot misbehaves, contact our super-support: @alexa_ash_avery\n\n"
+    "👇 <b>Выберите язык / Choose language:</b>"
+)
+
+RESET_SUCCESS = "🔄 <b>Данные сброшены! / Data reset!</b>\n\n👇 <b>Выберите язык / Choose language:</b>"
+
+AFTER_LANGUAGE = "✅ <b>Отлично! / Great!</b>\n\n👇 <b>Выберите действие / Choose an action:</b>"
+
+CHOOSE_LANG = "🌍 <b>Выбери язык / Choose language:</b>"
+
+
 TEXTS = {
     "ru": {
-        "welcome_bilingual": (
-            "👋 <b>Привет! / Hello!</b>\n\n"
-            "🎓 <b>Я — бот расписания БФУ им. И. Канта.</b>\n"
-            "🎓 <b>I am the BFU Im. Kant schedule bot.</b>\n\n"
-            "📋 <b>Как пользоваться / How to use:</b>\n"
-            " 1️⃣ Выбери язык / Choose language\n"
-            " 2️⃣ Введи номер группы / Enter group number\n"
-            " 3️⃣ Смотри расписание / Check schedule\n\n"
-            "⚙️ <b>Кнопки меню / Menu buttons:</b>\n"
-            " 📅 <b>Сегодня / Today</b> — пары на сегодня\n"
-            " 📆 <b>Завтра / Tomorrow</b> — пары на завтра\n"
-            " 🗓 <b>На неделю / Week</b> — расписание на 7 дней\n"
-            " 📆 <b>Дата / Date</b> — расписание на конкретный день\n"
-            " ⚙️ <b>Настройки / Settings</b> — сменить группу\n"
-            " 🌍 <b>Язык / Language</b> — сменить язык\n"
-            " 📋 <b>Группы / Groups</b> — список всех специальностей\n"
-            " ❓ <b>Помощь / Help</b> — подробный гайд\n\n"
-            " 🆘 <b>Нужна помощь? / Need help?</b>\n"
-            "Если вашей группы нет или бот работает некорректно, напишите в нашу супер-поддержку: @alexa_ash_avery\n\n"
-            "👇 <b>Выберите язык / Choose language:</b>"
-        ),
-        "after_language": (
-            "✅ <b>Отлично! / Great!</b>\n\n"
-            "👇 <b>Выберите действие / Choose an action:</b>"
-        ),
-        # В этой строке должен быть ТОЛЬКО {group}. Никаких {groups_text}!
+        "welcome_bilingual": WELCOME_BILINGUAL,
+        "after_language": AFTER_LANGUAGE,
         "group_saved": "✅ <b>Группа {group} сохранена!</b>\n\n🎯 Теперь выбери, что показать:",
-        # Раньше этого ключа не было, и бот писал слово "enter_group"
         "enter_group": "👇 <b>Введи номер группы:</b>\n\n💡 Например: <code>03_ФИИТ_26_02</code>",
         "group_invalid": (
             "❌ <b>Группа указана неверно.</b>\n\n"
@@ -49,7 +58,7 @@ TEXTS = {
             "💡 Возможно, сайт БФУ временно недоступен.\n"
             "🆘 Если проблема не решается, напиши: @alexa_ash_avery"
         ),
-        "choose_lang": "🌍 <b>Выбери язык / Choose language:</b>",
+        "choose_lang": CHOOSE_LANG,
         "lang_set": "✅ <b>Язык установлен: Русский</b>",
         "no_classes": "🎉 <b>Пар нет — можно отдыхать!</b>",
         "error_schedule": (
@@ -69,21 +78,36 @@ TEXTS = {
         "language_btn": "🌍 Язык",
         "groups_btn": "📋 Группы",
         "help_btn": "❓ Помощь",
-        "enter_date": "📅 <b>Введи дату в формате <code>ДД.ММ.ГГГГ</code></b>\n\n📌 <b>Пример:</b> <code>15.10.2026</code>",
-        "date_invalid": "❌ <b>Неверный формат даты.</b>\n\n💡 Правильный формат: <code>ДД.ММ.ГГГГ</code>",
+        "changelog_btn": "🆕 Что нового?",
+        "menu_btn": "🏠 Меню",
+        "enter_date": (
+            "📅 <b>Введи любую дату — из прошлого или из будущего.</b>\n\n"
+            "📌 <b>Форматы:</b>\n"
+            " • <code>ДД.ММ.ГГГГ</code> — например, <code>15.10.2026</code>\n"
+            " • <code>ДД.ММ</code> — текущий год, например, <code>15.10</code>"
+        ),
+        "date_invalid": (
+            "❌ <b>Не получилось разобрать дату.</b>\n\n"
+            "💡 Правильные форматы: <code>ДД.ММ.ГГГГ</code> или <code>ДД.ММ</code>\n"
+            "📆 Год — от 2000 до 2100.\n"
+            "👇 <b>Попробуй ещё раз:</b>"
+        ),
         "welcome_back": (
             "👋 <b>С возвращением!</b>\n\n"
             "🎓 <b>Твоя группа:</b> {group}\n\n"
             "🎯 <b>Выбери действие:</b>"
         ),
-        "reset_success": "🔄 <b>Данные сброшены!</b>\n\n👇 <b>Выберите язык для продолжения:</b>",
+        "reset_success": RESET_SUCCESS,
         "help_message": (
-            "❓ <b>Помощь / Help</b>\n\n"
+            "❓ <b>Помощь</b>\n\n"
             "📚 <b>Основные команды:</b>\n"
             " • <code>/start</code> — начать работу с ботом\n"
             " • <code>/reset</code> — сбросить настройки\n"
             " • <code>/groups</code> — список всех групп БФУ\n"
+            " • <code>/changelog</code> — что нового в боте\n"
             " • <code>/help</code> — показать это сообщение\n\n"
+            "📆 <b>Кнопка «Дата»</b> показывает расписание на любой день — "
+            "и из прошлого, и из будущего.\n\n"
             "🆘 <b>Нужна помощь?</b>\n"
             "Напишите супер-поддержке: @alexa_ash_avery"
         ),
@@ -99,19 +123,54 @@ TEXTS = {
             "🆘 <b>Не можешь найти?</b>\n"
             "Напиши супер-поддержке: @alexa_ash_avery"
         ),
+        # --- служебные сообщения ---
+        "changelog_header": "📋 <b>История изменений:</b>",
+        "fallback_message": "Не понял 🤔 Нажми /start, чтобы вернуться в меню",
+        "fallback_callback": "Кнопка устарела, нажми /start",
+        "admin_no_rights": "⛔ У вас нет прав для этой команды.",
+        "broadcast_usage": (
+            "📢 <b>Использование:</b>\n"
+            "<code>/broadcast Текст сообщения</code>\n\n"
+            "Чтобы каждый получил текст на своём языке, раздели русскую и английскую "
+            "части тремя символами «|»:\n"
+            "<code>/broadcast Привет! ||| Hello!</code>"
+        ),
+        "broadcast_start": "📤 Начинаю рассылку {count} пользователям...",
+        "broadcast_done": "✅ Рассылка завершена!\n📤 Успешно: {ok}\n❌ Ошибок: {fail}",
     },
     "en": {
-        "after_language": "✅ <b>Great!</b>\n\n👇 <b>Choose an action:</b>",
+        "welcome_bilingual": WELCOME_BILINGUAL,
+        "after_language": AFTER_LANGUAGE,
         "group_saved": "✅ <b>Group {group} saved!</b>\n\n🎯 Now choose what to show:",
         "enter_group": "👇 <b>Enter your group number:</b>\n\n💡 For example: <code>03_ФИИТ_26_02</code>",
-        "group_invalid": "❌ <b>Invalid group number.</b>\n\n💡 Check the format: <code>03_ФИИТ_26_02</code>\n👇 <b>Try again:</b>",
-        "group_not_found": "❌ <b>Group not found in BFU database.</b>\n\n🆘 If your group is missing, contact: @alexa_ash_avery\n\n👇 <b>Try entering the group again:</b>",
-        "fetch_error": "❌ <b>Could not fetch schedule.</b>\n\n🆘 If the problem persists, contact: @alexa_ash_avery",
-        "choose_lang": "🌍 <b>Choose language / Выбери язык:</b>",
+        "group_invalid": (
+            "❌ <b>Invalid group number.</b>\n\n"
+            "💡 Check the format: <code>03_ФИИТ_26_02</code>\n"
+            "👇 <b>Try again:</b>"
+        ),
+        "group_not_found": (
+            "❌ <b>Group not found in BFU database.</b>\n\n"
+            "💡 Maybe there is a typo in the name.\n"
+            "🆘 If your group is missing, contact: @alexa_ash_avery\n\n"
+            "👇 <b>Try entering the group again:</b>"
+        ),
+        "fetch_error": (
+            "❌ <b>Could not fetch schedule.</b>\n\n"
+            "💡 The BFU website may be temporarily unavailable.\n"
+            "🆘 If the problem persists, contact: @alexa_ash_avery"
+        ),
+        "choose_lang": CHOOSE_LANG,
         "lang_set": "✅ <b>Language set: English</b>",
-        "no_classes": "🎉 <b>No classes today — enjoy your free time!</b>",
-        "error_schedule": "❌ <b>Error fetching schedule.</b>\n\n🆘 If the problem persists, contact: @alexa_ash_avery",
-        "settings": "⚙️ <b>Settings</b>\n\n📚 <b>Current group:</b> {group}\n\n👇 <b>Enter new group number:</b>",
+        "no_classes": "🎉 <b>No classes — enjoy your free time!</b>",
+        "error_schedule": (
+            "❌ <b>Error fetching schedule.</b>\n\n"
+            "🆘 If the problem persists, contact: @alexa_ash_avery"
+        ),
+        "settings": (
+            "⚙️ <b>Settings</b>\n\n"
+            "📚 <b>Current group:</b> {group}\n\n"
+            "👇 <b>Enter new group number:</b>"
+        ),
         "today": "📅 Today",
         "tomorrow": "📆 Tomorrow",
         "week": "🗓 Week",
@@ -120,17 +179,36 @@ TEXTS = {
         "language_btn": "🌍 Language",
         "groups_btn": "📋 Groups",
         "help_btn": "❓ Help",
-        "enter_date": "📅 <b>Enter date in format <code>DD.MM.YYYY</code></b>\n\n📌 <b>Example:</b> <code>15.10.2026</code>",
-        "date_invalid": "❌ <b>Invalid date format.</b>\n\n💡 Correct format: <code>DD.MM.YYYY</code>",
-        "welcome_back": "👋 <b>Welcome back!</b>\n\n🎓 <b>Your group:</b> {group}\n\n🎯 <b>Choose an action:</b>",
-        "reset_success": "🔄 <b>Data reset!</b>\n\n👇 <b>Choose language to continue:</b>",
+        "changelog_btn": "🆕 What's new?",
+        "menu_btn": "🏠 Menu",
+        "enter_date": (
+            "📅 <b>Enter any date — past or future.</b>\n\n"
+            "📌 <b>Formats:</b>\n"
+            " • <code>DD.MM.YYYY</code> — e.g. <code>15.10.2026</code>\n"
+            " • <code>DD.MM</code> — current year, e.g. <code>15.10</code>"
+        ),
+        "date_invalid": (
+            "❌ <b>Could not read the date.</b>\n\n"
+            "💡 Correct formats: <code>DD.MM.YYYY</code> or <code>DD.MM</code>\n"
+            "📆 The year must be between 2000 and 2100.\n"
+            "👇 <b>Try again:</b>"
+        ),
+        "welcome_back": (
+            "👋 <b>Welcome back!</b>\n\n"
+            "🎓 <b>Your group:</b> {group}\n\n"
+            "🎯 <b>Choose an action:</b>"
+        ),
+        "reset_success": RESET_SUCCESS,
         "help_message": (
             "❓ <b>Help</b>\n\n"
             "📚 <b>Main commands:</b>\n"
             " • <code>/start</code> — start working with the bot\n"
             " • <code>/reset</code> — reset settings\n"
             " • <code>/groups</code> — show all BFU groups\n"
+            " • <code>/changelog</code> — what's new in the bot\n"
             " • <code>/help</code> — show this message\n\n"
+            "📆 <b>The “Date” button</b> shows the schedule for any day — "
+            "past or future.\n\n"
             "🆘 <b>Need help?</b>\n"
             "Contact our super-support: @alexa_ash_avery"
         ),
@@ -146,8 +224,33 @@ TEXTS = {
             "🆘 <b>Can't find it?</b>\n"
             "Contact our super-support: @alexa_ash_avery"
         ),
+        # --- service messages ---
+        "changelog_header": "📋 <b>Changelog:</b>",
+        "fallback_message": "I didn't get that 🤔 Press /start to go back to the menu",
+        "fallback_callback": "This button is outdated, press /start",
+        "admin_no_rights": "⛔ You don't have permission for this command.",
+        "broadcast_usage": (
+            "📢 <b>Usage:</b>\n"
+            "<code>/broadcast Message text</code>\n\n"
+            "To send each user the text in their own language, separate the Russian "
+            "and English parts with three “|” symbols:\n"
+            "<code>/broadcast Привет! ||| Hello!</code>"
+        ),
+        "broadcast_start": "📤 Starting broadcast to {count} users...",
+        "broadcast_done": "✅ Broadcast finished!\n📤 Sent: {ok}\n❌ Failed: {fail}",
     },
 }
+
+# Названия дней недели (понедельник = индекс 0, как в Python)
+WEEKDAYS = {
+    "ru": ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"],
+    "en": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+}
+
+# Самопроверка: в обоих языках должны быть одни и те же ключи.
+_missing = set(TEXTS["ru"]) ^ set(TEXTS["en"])
+if _missing:
+    logger.warning("⚠️ Ключи есть не в обоих языках: %s", sorted(_missing))
 
 
 def t(lang: str, key: str, **kwargs) -> str:
@@ -159,7 +262,5 @@ def t(lang: str, key: str, **kwargs) -> str:
     try:
         return text.format(**kwargs)
     except (KeyError, IndexError) as e:
-        # Защита: если в тексте есть лишний {плейсхолдер}, бот не падает,
-        # а пишет понятную ошибку в лог и отправляет текст как есть.
         logger.error("Ошибка форматирования текста key=%r lang=%r: %r", key, lang, e)
         return text
