@@ -139,6 +139,15 @@ TEXTS = {
         ),
         "broadcast_start": "📤 Начинаю рассылку {count} пользователям...",
         "broadcast_done": "✅ Рассылка завершена!\n📤 Успешно: {ok}\n❌ Ошибок: {fail}",
+
+        "donate_btn": "💖 Поддержать разработчицу",
+        "donate_message": (
+            "☕ <b>Разработчице заплатите чеканной монетой на кофеёк!</b>\n\n"
+            "Ваша поддержка помогает делать бота быстрее, стабильнее и еще круче.\n\n"
+            "💳 <b>Как поддержать:</b>\n"
+            "   • Сбор на Сбере: https://messenger.sbrf.ru/sl/XdhKV49gaUoU7hhyy\n\n"
+            "Спасибо, что вы с нами! ❤️"
+        ),
     },
     "en": {
         "welcome_bilingual": WELCOME_BILINGUAL,
@@ -244,6 +253,15 @@ TEXTS = {
         ),
         "broadcast_start": "📤 Starting broadcast to {count} users...",
         "broadcast_done": "✅ Broadcast finished!\n📤 Sent: {ok}\n❌ Failed: {fail}",
+
+        "donate_btn": "💖 Support the developer",
+        "donate_message": (
+            "☕ <b>Toss a coin to your developer for a coffee!</b>\n\n"
+            "Your support helps make the bot faster, more stable, and even better.\n\n"
+            "💳 <b>How to support:</b>\n"
+            "   • Sberbank collection link: https://messenger.sbrf.ru/sl/XdhKV49gaUoU7hhyy\n\n"
+            "Thanks for being with us! ❤️"
+),
     },
 }
 
