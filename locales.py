@@ -42,6 +42,8 @@ TEXTS = {
             "👇 <b>Выбери дальнейшее действие:</b>"
         ),
         "choose_lang": "🌍 <b>Выбери язык:</b>",
+        "next_week": "🗓 На следующую неделю",
+        "next_week_btn": "➡️ Следующая неделя",
         "group_saved": "✅ <b>Группа {group} сохранена!</b>\n\n🎯 Теперь выбери, что показать:",
         "enter_group": "👇 <b>Введи номер группы:</b>\n\n💡 Например: <code>03_ФИИТ_26_2</code>",
         "group_invalid": (
@@ -156,6 +158,8 @@ TEXTS = {
             "👇 <b>Choose your next action:</b>"
         ),
         "choose_lang": "🌍 <b>Choose a language:</b>",
+        "next_week": "🗓 For next week",
+        "next_week_btn": "➡️ Next week",
         "group_saved": "✅ <b>Group {group} saved!</b>\n\n🎯 Now choose what to show:",
         "enter_group": "👇 <b>Enter your group number:</b>\n\n💡 For example: <code>03_ФИИТ_26_2</code>",
         "group_invalid": (
