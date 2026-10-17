@@ -79,34 +79,33 @@ async def fetch_schedule(group: str, target: date | None = None) -> dict | None:
                 logger.error(f"Ответ сервера: {response.text[:500]}")
                 return None
 
+            # 👇 ВОТ ЗДЕСЬ БЫЛИ СЛОМАНЫ ОТСТУПЫ 👇
+            data = response.json()
 
-data = response.json()
+            logger.info(
+                "API response: type=%s, keys=%s",
+                type(data).__name__,
+                list(data.keys()) if isinstance(data, dict) else "not a dict",
+            )
 
-logger.info(
-    "API response: type=%s, keys=%s",
-    type(data).__name__,
-    list(data.keys()) if isinstance(data, dict) else "not a dict",
-)
+            schedule = parse_lessons_data(data)
 
-schedule = parse_lessons_data(data)
+            # Пустой ответ не кэшируем: сначала нужно понять,
+            # действительно ли API вернул пустое расписание.
+            if not schedule:
+                logger.warning(
+                    "Парсер не извлёк ни одной пары для группы %r. "
+                    "Фрагмент ответа API: %s",
+                    group,
+                    repr(data)[:2000],
+                )
+                return {}
 
-# Пустой ответ не кэшируем: сначала нужно понять,
-# действительно ли API вернул пустое расписание.
-if not schedule:
-    logger.warning(
-        "Парсер не извлёк ни одной пары для группы %r. "
-        "Фрагмент ответа API: %s",
-        group,
-        repr(data)[:2000],
-    )
-    return {}
+            if len(_cache) > 500:
+                _cache.clear()
 
-if len(_cache) > 500:
-    _cache.clear()
-
-_cache[key] = (time.monotonic(), schedule)
-return schedule
-
+            _cache[key] = (time.monotonic(), schedule)
+            return schedule
 
     except Exception as e:
         logger.exception(f"❌ Критическая ошибка при запросе расписания: {e}")
