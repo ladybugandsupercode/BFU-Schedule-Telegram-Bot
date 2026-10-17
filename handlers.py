@@ -51,23 +51,37 @@ def esc(value) -> str:
 # ============================================================
 
 def format_day(date_key: str, lessons: list, lang: str) -> str:
-    """Форматирует один день. Заголовок: «Понедельник, 12.10.2026» / «Monday, 12.10.2026»."""
+    """Форматирует один день. Дата снаружи, все пары внутри красивой цитаты."""
     d = datetime.strptime(date_key, "%Y-%m-%d")
     weekdays = WEEKDAYS.get(lang, WEEKDAYS["ru"])
+    
+    # Дата СНАРУЖИ цитаты
     header = f"<b>📅 {weekdays[d.weekday()]}, {d.strftime('%d.%m.%Y')}</b>"
 
     if not lessons:
         return f"{header}\n\n{t(lang, 'no_classes')}"
 
-    lines = [header + "\n"]
+    # Собираем строки для цитаты
+    quote_lines = []
     for l in lessons:
-        lines.append(
-            f"⏰ <b>{esc(l['time'])}</b>\n"
-            f"📘 <b>{esc(l['subject'])}</b>\n"
+        # Кабинет жирным для мгновенного считывания
+        room_bold = f"<b>{esc(l['room'])}</b>"
+        
+        # Если номер пары есть, добавляем его красиво
+        num_prefix = f"🔢 <b>{esc(l['lesson_num'])} пара</b> | " if l['lesson_num'] else ""
+        
+        line = (
+            f"⏰ {esc(l['time'])}\n"
+            f"{num_prefix}📘 {esc(l['subject'])}\n"
             f"👨‍🏫 {esc(l['teacher'])}\n"
-            f"🏫 {esc(l['room'])}\n"
+            f"🏫 {room_bold}"
         )
-    return "\n".join(lines)
+        quote_lines.append(line)
+
+    # Объединяем все пары дня в один блок цитаты
+    quote_text = "\n\n".join(quote_lines)
+    
+    return f"{header}\n\n<blockquote>{quote_text}</blockquote>"
 
 
 async def get_schedule_for_user(telegram_id: int, day: date | None = None) -> dict | None:
@@ -319,6 +333,35 @@ async def show_week(message: Message):
     if len(full) <= 4000:
         await message.answer(full, parse_mode="HTML")
     else:
+        for d in days:
+            await message.answer(format_day(d, schedule.get(d, []), lang), parse_mode="HTML")
+
+
+@router.message(F.text.in_([t("ru", "next_week"), t("en", "next_week")]))
+async def show_next_week(message: Message):
+    lang = await get_user_language(message.from_user.id)
+    
+    # Вычисляем понедельник следующей недели
+    today = today_date()
+    days_until_next_monday = 7 - today.weekday()
+    next_monday = today + timedelta(days=days_until_next_monday)
+    
+    schedule = await get_schedule_for_user(message.from_user.id, next_monday)
+    if schedule is None:
+        await message.answer(t(lang, "error_schedule"), parse_mode="HTML")
+        return
+        
+    # Получаем даты именно для следующей недели
+    from parser import get_week_dates
+    days = get_week_dates(next_monday)
+    parts = [format_day(d, schedule.get(d, []), lang) for d in days]
+    full = "\n\n".join(parts)
+
+    # Если текст слишком длинный, разбиваем на сообщения по дням
+    if len(full) <= 4000:
+        await message.answer(full, parse_mode="HTML")
+    else:
+        await message.answer(f"<b>⚠️ Расписание на неделю слишком длинное, отправляю по дням:</b>", parse_mode="HTML")
         for d in days:
             await message.answer(format_day(d, schedule.get(d, []), lang), parse_mode="HTML")
 
