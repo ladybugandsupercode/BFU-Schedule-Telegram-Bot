@@ -252,13 +252,15 @@ async def action_choose_group(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data == "action_language")
 async def action_change_language(callback: CallbackQuery, state: FSMContext):
+    lang = await get_user_language(callback.from_user.id)
     await state.set_state(Register.waiting_language)
     await callback.answer()
     await callback.message.answer(
-        t("ru", "choose_lang"),
+        t(lang, "choose_lang"),
         reply_markup=language_kb(),
         parse_mode="HTML"
     )
+
 
 
 @router.callback_query(F.data == "action_menu")
@@ -335,9 +337,10 @@ async def settings(message: Message, state: FSMContext):
 
 @router.message(F.text.in_([t("ru", "language_btn"), t("en", "language_btn")]))
 async def change_language(message: Message, state: FSMContext):
+    lang = await get_user_language(message.from_user.id)
     await state.set_state(Register.waiting_language)
     await message.answer(
-        t("ru", "choose_lang"),
+        t(lang, "choose_lang"),
         reply_markup=language_kb(),
         parse_mode="HTML"
     )
