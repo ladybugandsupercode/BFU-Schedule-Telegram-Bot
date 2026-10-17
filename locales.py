@@ -23,7 +23,7 @@ WELCOME_BILINGUAL = (
     " ⚙️ <b>Настройки / Settings</b> — сменить группу / change group\n"
     " 🌍 <b>Язык / Language</b> — сменить язык / change language\n"
     " 📋 <b>Группы / Groups</b> — список специальностей / list of programs\n"
-    " ❓ <b>Помощь / Help</b> — подробный гайд / detailed guide\n\n"
+    " ❓ <b>Помощь / Help</b> — подробный гайд / detailed guide\n"
     " 💖 <b>Поддержать / Support</b> — поддержать разработчицу / support the developer\n\n"
     " 🆘 <b>Нужна помощь? / Need help?</b>\n"
     "Если вашей группы нет или бот работает некорректно, напишите в нашу супер-поддержку / "
