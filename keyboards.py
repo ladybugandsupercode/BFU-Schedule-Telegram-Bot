@@ -6,7 +6,8 @@ def main_menu_kb(lang: str) -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text=t(lang, "today")), KeyboardButton(text=t(lang, "tomorrow"))],
-            [KeyboardButton(text=t(lang, "week")), KeyboardButton(text=t(lang, "custom_date"))],
+            [KeyboardButton(text=t(lang, "week")), KeyboardButton(text=t(lang, "next_week_btn"))],  # <-- Замени "custom_date" на "next_week_btn"
+            [KeyboardButton(text=t(lang, "custom_date")), KeyboardButton(text=t(lang, "settings_btn"))],
             [KeyboardButton(text=t(lang, "groups_btn")), KeyboardButton(text=t(lang, "help_btn"))],
             [KeyboardButton(text="🆕 Что нового?"), KeyboardButton(text=t(lang, "settings_btn"))],
             [KeyboardButton(text=t(lang, "donate_btn"))],
