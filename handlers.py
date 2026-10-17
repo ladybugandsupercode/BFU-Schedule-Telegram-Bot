@@ -124,7 +124,6 @@ async def cmd_groups(message: Message):
     )
     await message.answer(groups_text, parse_mode="HTML")
 
-
 @router.callback_query(F.data.startswith("lang_"))
 async def process_language(callback: CallbackQuery, state: FSMContext):
     lang = callback.data.split("_")[1]
