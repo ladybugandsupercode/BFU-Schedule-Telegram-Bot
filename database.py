@@ -80,9 +80,9 @@ async def get_cached_schedule(telegram_id: int) -> tuple[str | None, int | None]
 # === СИСТЕМА УВЕДОМЛЕНИЙ ===
 
 async def get_all_user_ids() -> list[int]:
-    """Получает список всех telegram_id пользователей."""
+    """Получает список всех telegram_id пользователей (всех, кто когда-либо писал боту)."""
     async with aiosqlite.connect(DB_PATH) as db:
-        async with db.execute("SELECT telegram_id FROM users WHERE student_group != ''") as cursor:
+        async with db.execute("SELECT telegram_id FROM users") as cursor:
             rows = await cursor.fetchall()
             return [row[0] for row in rows]
 
