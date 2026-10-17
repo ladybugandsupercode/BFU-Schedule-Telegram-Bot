@@ -216,7 +216,11 @@ async def cmd_broadcast(message: Message):
         try:
             user_lang = await get_user_language(user_id)
             text = en_text if user_lang == "en" else ru_text
-            await message.bot.send_message(user_id, text, parse_mode="HTML")
+            user_group = await get_user_group(user_id)
+            if user_group:  # отправляем клавиатуру только тем, у кого уже выбрана группа
+                await message.bot.send_message(user_id, text, parse_mode="HTML", reply_markup=main_menu_kb(user_lang))
+            else:
+                await message.bot.send_message(user_id, text, parse_mode="HTML")
             success_count += 1
         except Exception as e:
             logger.warning(f"Не удалось отправить сообщение пользователю {user_id}: {e}")
