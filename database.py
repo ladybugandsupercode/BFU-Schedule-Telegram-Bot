@@ -5,7 +5,7 @@ from config import DB_PATH
 logger = logging.getLogger(__name__)
 
 async def init_db():
-    """Инициализирует базу данных и создаёт/обновляет таблицу."""
+    """Инициализирует базу данных и добавляет недостающие столбцы, если их нет."""
     try:
         async with aiosqlite.connect(DB_PATH) as db:
             # 1. Создаём базовую таблицу, если её вообще нет
@@ -19,10 +19,11 @@ async def init_db():
             )
             """)
             
-            # 2. МИГРАЦИЯ: Пробуем добавить новый столбец. 
-            # Если он уже есть, возникнет OperationalError, который мы игнорируем.
+            # 2. МИГРАЦИЯ: Пробуем добавить новый столбец для версий уведомлений.
+            # Если он уже есть, возникнет OperationalError, который мы спокойно игнорируем.
             try:
                 await db.execute("ALTER TABLE users ADD COLUMN notified_version TEXT DEFAULT NULL")
+                logger.info("✅ Добавлен столбец notified_version")
             except aiosqlite.OperationalError:
                 pass  # Столбец уже существует, всё отлично
 
