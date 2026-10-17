@@ -5,30 +5,29 @@ from config import DB_PATH
 logger = logging.getLogger(__name__)
 
 async def init_db():
-    """Инициализирует базу данных и создаёт таблицу, если её нет."""
+    """Инициализирует базу данных и создаёт/обновляет таблицу."""
     try:
         async with aiosqlite.connect(DB_PATH) as db:
+            # 1. Создаём базовую таблицу, если её вообще нет
             await db.execute("""
-                CREATE TABLE IF NOT EXISTS users (
-                    telegram_id INTEGER PRIMARY KEY,
-                    student_group TEXT,
-                    language TEXT DEFAULT 'ru',
-                    last_cached_schedule TEXT,
-                    cache_updated_at INTEGER DEFAULT 0
-                )
+            CREATE TABLE IF NOT EXISTS users (
+                telegram_id INTEGER PRIMARY KEY,
+                student_group TEXT,
+                language TEXT DEFAULT 'ru',
+                last_cached_schedule TEXT,
+                cache_updated_at INTEGER DEFAULT 0
+            )
             """)
+            
+            # 2. МИГРАЦИЯ: Пробуем добавить новый столбец. 
+            # Если он уже есть, возникнет OperationalError, который мы игнорируем.
+            try:
+                await db.execute("ALTER TABLE users ADD COLUMN notified_version TEXT DEFAULT NULL")
+            except aiosqlite.OperationalError:
+                pass  # Столбец уже существует, всё отлично
+
             await db.commit()
-            logger.info("✅ База данных успешно инициализирована")
-            await db.execute("""
-                CREATE TABLE IF NOT EXISTS users (
-                    telegram_id INTEGER PRIMARY KEY,
-                    student_group TEXT,
-                    language TEXT DEFAULT 'ru',
-                    last_cached_schedule TEXT,
-                    cache_updated_at INTEGER DEFAULT 0,
-                    notified_version TEXT DEFAULT NULL
-                )
-            """)
+            logger.info("✅ База данных успешно инициализирована и проверена")
     except Exception as e:
         logger.error(f"❌ Ошибка инициализации БД: {e}")
         raise
