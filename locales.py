@@ -31,15 +31,17 @@ WELCOME_BILINGUAL = (
 
 RESET_SUCCESS = "🔄 <b>Данные сброшены! / Data reset!</b>\n\n👇 <b>Выберите язык / Choose language:</b>"
 
-AFTER_LANGUAGE = "✅ <b>Отлично! / Great!</b>\n\n👇 <b>Выберите действие / Choose an action:</b>"
-
 CHOOSE_LANG = "🌍 <b>Выбери язык / Choose language:</b>"
 
 
 TEXTS = {
     "ru": {
         "welcome_bilingual": WELCOME_BILINGUAL,
-        "after_language": AFTER_LANGUAGE,
+        "after_language": (
+            "✅ <b>Отлично!</b>\n\n"
+            "👇 <b>Выбери дальнейшее действие:</b>"
+        ),
+        "choose_lang": "🌍 <b>Выбери язык:</b>",
         "group_saved": "✅ <b>Группа {group} сохранена!</b>\n\n🎯 Теперь выбери, что показать:",
         "enter_group": "👇 <b>Введи номер группы:</b>\n\n💡 Например: <code>03_ФИИТ_26_02</code>",
         "group_invalid": (
@@ -140,7 +142,11 @@ TEXTS = {
     },
     "en": {
         "welcome_bilingual": WELCOME_BILINGUAL,
-        "after_language": AFTER_LANGUAGE,
+        "after_language": (
+            "✅ <b>Great!</b>\n\n"
+            "👇 <b>Choose your next action:</b>"
+        ),
+        "choose_lang": "🌍 <b>Choose a language:</b>",
         "group_saved": "✅ <b>Group {group} saved!</b>\n\n🎯 Now choose what to show:",
         "enter_group": "👇 <b>Enter your group number:</b>\n\n💡 For example: <code>03_ФИИТ_26_02</code>",
         "group_invalid": (
