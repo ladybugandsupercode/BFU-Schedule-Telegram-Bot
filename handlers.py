@@ -112,6 +112,8 @@ async def show_day(message: Message, day: date, lang: str):
 
 @router.message(Command("start"))
 async def cmd_start(message: Message, state: FSMContext):
+    await state.clear()
+    
     group = await get_user_group(message.from_user.id)
     lang = await get_user_language(message.from_user.id)
 
