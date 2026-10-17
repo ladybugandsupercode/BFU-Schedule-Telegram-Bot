@@ -43,10 +43,10 @@ TEXTS = {
         ),
         "choose_lang": "🌍 <b>Выбери язык:</b>",
         "group_saved": "✅ <b>Группа {group} сохранена!</b>\n\n🎯 Теперь выбери, что показать:",
-        "enter_group": "👇 <b>Введи номер группы:</b>\n\n💡 Например: <code>03_ФИИТ_26_02</code>",
+        "enter_group": "👇 <b>Введи номер группы:</b>\n\n💡 Например: <code>03_ФИИТ_26_2</code>",
         "group_invalid": (
             "❌ <b>Группа указана неверно.</b>\n\n"
-            "💡 Проверь формат: <code>03_ФИИТ_26_02</code>\n"
+            "💡 Проверь формат: <code>03_ФИИТ_26_2</code>\n"
             "👇 <b>Попробуй ещё раз:</b>"
         ),
         "group_not_found": (
@@ -120,7 +120,7 @@ TEXTS = {
             " 1️⃣ Открой сайт\n"
             " 2️⃣ Выбери свой институт/колледж\n"
             " 3️⃣ Найди направление и курс\n"
-            " 4️⃣ Скопируй название группы (например, <code>03_ФИИТ_26_02</code>)\n"
+            " 4️⃣ Скопируй название группы (например, <code>03_ФИИТ_26_2</code>)\n"
             " 5️⃣ Введи его сюда\n\n"
             "🆘 <b>Не можешь найти?</b>\n"
             "Напиши супер-поддержке: @alexa_ash_avery"
@@ -148,7 +148,7 @@ TEXTS = {
         ),
         "choose_lang": "🌍 <b>Choose a language:</b>",
         "group_saved": "✅ <b>Group {group} saved!</b>\n\n🎯 Now choose what to show:",
-        "enter_group": "👇 <b>Enter your group number:</b>\n\n💡 For example: <code>03_ФИИТ_26_02</code>",
+        "enter_group": "👇 <b>Enter your group number:</b>\n\n💡 For example: <code>03_ФИИТ_26_2</code>",
         "group_invalid": (
             "❌ <b>Invalid group number.</b>\n\n"
             "💡 Check the format: <code>03_ФИИТ_26_02</code>\n"
@@ -225,7 +225,7 @@ TEXTS = {
             " 1️⃣ Open the website\n"
             " 2️⃣ Choose your institute/college\n"
             " 3️⃣ Find your program and year\n"
-            " 4️⃣ Copy the group name (e.g., <code>03_ФИИТ_26_02</code>)\n"
+            " 4️⃣ Copy the group name (e.g., <code>03_ФИИТ_26_2</code>)\n"
             " 5️⃣ Enter it here\n\n"
             "🆘 <b>Can't find it?</b>\n"
             "Contact our super-support: @alexa_ash_avery"
