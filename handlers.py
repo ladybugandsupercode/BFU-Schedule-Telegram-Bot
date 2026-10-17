@@ -226,22 +226,27 @@ async def cmd_broadcast(message: Message):
     success_count = 0
     fail_count = 0
 
-    for user_id in user_ids:
+        for user_id in user_ids:
         try:
             user_lang = await get_user_language(user_id)
             text = en_text if user_lang == "en" else ru_text
+            
+            # Проверяем, есть ли у пользователя группа
             user_group = await get_user_group(user_id)
-            if user_group:  # отправляем клавиатуру только тем, у кого уже выбрана группа
+            
+            if user_group:
+                # Если группа есть — отправляем с клавиатурой
                 await message.bot.send_message(user_id, text, parse_mode="HTML", reply_markup=main_menu_kb(user_lang))
             else:
+                # Если группы нет — отправляем просто текст (без клавиатуры, чтобы не ломать регистрацию)
                 await message.bot.send_message(user_id, text, parse_mode="HTML")
+            
             success_count += 1
         except Exception as e:
             logger.warning(f"Не удалось отправить сообщение пользователю {user_id}: {e}")
             fail_count += 1
+        
         await asyncio.sleep(0.05)  # пауза, чтобы Telegram не ограничил скорость
-
-    await message.answer(t(admin_lang, "broadcast_done", ok=success_count, fail=fail_count))
 
 
 # ============================================================
