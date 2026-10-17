@@ -141,12 +141,16 @@ def parse_lessons_data(data: dict | list) -> dict:
         load = lesson.get("load") or ""
         subject = f"{discipline} ({load})" if load else discipline
 
-        # 3. Преподаватель: краткое имя (short), если есть
+        # 3. Преподаватель: пытаемся собрать полное ФИО, иначе берем name или short
         teacher_obj = lesson.get("teacher") or {}
         if isinstance(teacher_obj, dict):
-            teacher = teacher_obj.get("short") or teacher_obj.get("name") or "—"
+            full_name = f"{teacher_obj.get('last_name', '')} {teacher_obj.get('first_name', '')} {teacher_obj.get('patronymic', '')}".strip()
+            teacher = full_name or teacher_obj.get('name') or teacher_obj.get('short') or "—"
         else:
             teacher = str(teacher_obj) if teacher_obj else "—"
+
+        # 3.1 Номер пары (если API его отдает)
+        lesson_num = lesson.get("lesson_number") or lesson.get("number") or lesson.get("pair") or ""
 
         # 4. Аудитория
         room = lesson.get("beautiful_room") or lesson.get("short_room") or lesson.get("room") or "—"
@@ -156,17 +160,19 @@ def parse_lessons_data(data: dict | list) -> dict:
         # 5. Подгруппа
         subgroup = lesson.get("subgroup") or ""
         subgroup_text = f" | {subgroup}" if subgroup and subgroup != "Общая" else ""
-
+        
         if date_key not in schedule:
             schedule[date_key] = []
 
         schedule[date_key].append({
             "time": time_str,
+            "lesson_num": lesson_num,
             "subject": subject + subgroup_text,
             "teacher": teacher,
             "room": room
         })
 
+    
     # Сортируем пары по времени в каждом дне
     for date_key in schedule:
         schedule[date_key].sort(key=lambda x: x["time"])
@@ -182,6 +188,7 @@ def get_tomorrow() -> str:
     return (today_date() + timedelta(days=1)).strftime("%Y-%m-%d")
 
 
-def get_week_dates() -> list[str]:
-    monday = week_monday(today_date())
+def get_week_dates(base_date: date | None = None) -> list[str]:
+    d = base_date or today_date()
+    monday = week_monday(d)
     return [(monday + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
