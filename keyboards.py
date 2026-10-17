@@ -9,6 +9,7 @@ def main_menu_kb(lang: str) -> ReplyKeyboardMarkup:
             [KeyboardButton(text=t(lang, "week")), KeyboardButton(text=t(lang, "custom_date"))],
             [KeyboardButton(text=t(lang, "groups_btn")), KeyboardButton(text=t(lang, "help_btn"))],
             [KeyboardButton(text="🆕 Что нового?"), KeyboardButton(text=t(lang, "settings_btn"))],
+            [KeyboardButton(text=t(lang, "donate_btn"))],
         ],
         resize_keyboard=True,
     )
