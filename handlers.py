@@ -4,7 +4,7 @@ import asyncio
 import html
 import logging
 from datetime import date, datetime, timedelta
-
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
@@ -396,6 +396,24 @@ async def process_group(message: Message, state: FSMContext):
         parse_mode="HTML"
     )
 
+
+@router.message(F.text.in_([t("ru", "donate_btn"), t("en", "donate_btn")]))
+async def show_donate(message: Message):
+    lang = await get_user_language(message.from_user.id)
+    
+    # Создаём инлайн-кнопку с реальной ссылкой на донат
+    # ЗАМЕНИ 'https://boosty.to/ТВОЙ_НИК' на свою реальную ссылку (Boosty, ЮMoney, Telegram Donate и т.д.)
+    donate_link = "https://messenger.sbrf.ru/sl/XdhKV49gaUoU7hhyy" 
+    
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="💖 Поддержать разработчицу", url=donate_link)]
+    ])
+    
+    await message.answer(
+        t(lang, "donate_message"), 
+        reply_markup=kb, 
+        parse_mode="HTML"
+    )
 
 # ============================================================
 #  ЗАПАСНЫЕ ОБРАБОТЧИКИ — ВСЕГДА В САМОМ КОНЦЕ ФАЙЛА!
