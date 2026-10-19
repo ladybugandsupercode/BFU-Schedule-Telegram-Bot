@@ -41,11 +41,13 @@ async def set_user_group(telegram_id: int, group: str):
         """, (telegram_id, group))
         await db.commit()
 
-async def get_user_group(telegram_id: int) -> str | None:
+async def get_all_user_ids() -> list[int]:
+    """Получает список ВСЕХ telegram_id пользователей, кто когда-либо запускал бота."""
     async with aiosqlite.connect(DB_PATH) as db:
-        async with db.execute("SELECT student_group FROM users WHERE telegram_id=?", (telegram_id,)) as cursor:
-            row = await cursor.fetchone()
-            return row[0] if row else None
+        # Убрали условие WHERE, теперь берем абсолютно всех из таблицы
+        async with db.execute("SELECT telegram_id FROM users") as cursor:
+            rows = await cursor.fetchall()
+            return [row[0] for row in rows]
 
 async def set_user_language(telegram_id: int, language: str):
     async with aiosqlite.connect(DB_PATH) as db:
