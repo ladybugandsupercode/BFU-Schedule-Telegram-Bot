@@ -201,14 +201,15 @@ async def show_changelog(message: Message):
 
 @router.message(Command("broadcast"))
 async def cmd_broadcast(message: Message):
-    """Рассылка всем пользователям (только для админа).
-    Формат: /broadcast Текст  или  /broadcast Русский текст ||| English text"""
+    """Рассылка ВСЕМ пользователям (только для админа)."""
     admin_lang = await get_user_language(message.from_user.id)
 
+    # Проверка на админа
     if message.from_user.id != ADMIN_TELEGRAM_ID:
         await message.answer(t(admin_lang, "admin_no_rights"))
         return
 
+    # Разделяем текст на русский и английский
     args = (message.text or "").split(maxsplit=1)
     if len(args) < 2:
         await message.answer(t(admin_lang, "broadcast_usage"), parse_mode="HTML")
@@ -220,8 +221,9 @@ async def cmd_broadcast(message: Message):
     else:
         ru_text = en_text = raw_text
 
+    # Получаем ВСЕХ пользователей
     user_ids = await get_all_user_ids()
-    await message.answer(t(admin_lang, "broadcast_start", count=len(user_ids)))
+    await message.answer(f"📤 Начинаю рассылку {len(user_ids)} пользователям...")
 
     success_count = 0
     fail_count = 0
@@ -231,11 +233,11 @@ async def cmd_broadcast(message: Message):
             user_lang = await get_user_language(user_id)
             text = en_text if user_lang == "en" else ru_text
             
-            # Проверяем, есть ли у пользователя группа
+            # Проверяем, завершил ли пользователь регистрацию
             user_group = await get_user_group(user_id)
             
             if user_group:
-                # Если группа есть — отправляем с клавиатурой
+                # Если группа есть — отправляем с красивой новой клавиатурой
                 await message.bot.send_message(
                     user_id, 
                     text, 
@@ -243,17 +245,21 @@ async def cmd_broadcast(message: Message):
                     reply_markup=main_menu_kb(user_lang)
                 )
             else:
-                # Если группы нет — отправляем просто текст
+                # Если группы нет — отправляем просто текст, чтобы не мешать регистрации
                 await message.bot.send_message(user_id, text, parse_mode="HTML")
             
             success_count += 1
         except Exception as e:
+            # Если пользователь заблокировал бота, мы просто пропускаем его и идем дальше
             logger.warning(f"Не удалось отправить сообщение пользователю {user_id}: {e}")
             fail_count += 1
         
-        await asyncio.sleep(0.05)  # пауза, чтобы Telegram не ограничил скорость
+        # Небольшая пауза, чтобы Telegram не заблокировал бота за спам
+        await asyncio.sleep(0.05)
 
-    await message.answer(t(admin_lang, "broadcast_done", ok=success_count, fail=fail_count))
+    await message.answer(
+        f"✅ Рассылка завершена!\n📤 Успешно: {success_count}\n❌ Ошибок (заблокировали бота): {fail_count}"
+    )
 
 
 # ============================================================
