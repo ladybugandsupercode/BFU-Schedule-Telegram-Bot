@@ -45,7 +45,7 @@ async def fetch_schedule(group: str, target: date | None = None) -> dict | None:
 
     try:
         async with AsyncSession(impersonate="chrome120") as session:
-            response = await session.get(url, headers=headers, timeout=30)
+            response = await session.get(url, headers=headers, timeout=30, verify=False)
 
             if response.status_code == 429:
                 retry_after = response.headers.get("Retry-After", "60")
