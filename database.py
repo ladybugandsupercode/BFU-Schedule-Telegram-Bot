@@ -7,10 +7,9 @@ logger = logging.getLogger(__name__)
 
 
 async def init_db():
-    """Инициализирует базу данных и добавляет недостающие столбцы, если их нет."""
+    """Инициализирует базу данных и добавляет недостающие столбцы."""
     try:
         async with aiosqlite.connect(DB_PATH) as db:
-            # 1. Создаём базовую таблицу, если её вообще нет
             await db.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 telegram_id INTEGER PRIMARY KEY,
@@ -21,15 +20,14 @@ async def init_db():
             )
             """)
             
-            # 2. МИГРАЦИЯ: Пробуем добавить новый столбец для версий уведомлений
             try:
                 await db.execute("ALTER TABLE users ADD COLUMN notified_version TEXT DEFAULT NULL")
                 logger.info("✅ Добавлен столбец notified_version")
             except aiosqlite.OperationalError:
-                pass  # Столбец уже существует
+                pass
 
             await db.commit()
-            logger.info(f"✅ База данных успешно инициализирована по пути: {DB_PATH}")
+            logger.info(f"✅ База данных инициализирована: {DB_PATH}")
     except Exception as e:
         logger.error(f"❌ Ошибка инициализации БД: {e}")
         raise
@@ -85,8 +83,6 @@ async def get_cached_schedule(telegram_id: int) -> tuple[str | None, int | None]
             return (row[0], row[1]) if row else (None, None)
 
 
-# === СИСТЕМА УВЕДОМЛЕНИЙ ===
-
 async def get_all_user_ids() -> list[int]:
     """Получает список ВСЕХ telegram_id пользователей."""
     async with aiosqlite.connect(DB_PATH) as db:
@@ -96,20 +92,13 @@ async def get_all_user_ids() -> list[int]:
 
 
 async def get_user_notified_version(telegram_id: int) -> str | None:
-    """Получает версию, о которой пользователь уже уведомлен."""
     async with aiosqlite.connect(DB_PATH) as db:
-        async with db.execute(
-            "SELECT notified_version FROM users WHERE telegram_id=?",
-            (telegram_id,)
-        ) as cursor:
+        async with db.execute("SELECT notified_version FROM users WHERE telegram_id=?", (telegram_id,)) as cursor:
             row = await cursor.fetchone()
             return row[0] if row and len(row) > 0 else None
 
 
 async def set_user_notified_version(telegram_id: int, version: str):
-    """Отмечает, что пользователь уведомлен о данной версии."""
     async with aiosqlite.connect(DB_PATH) as db:
-        await db.execute("""
-        UPDATE users SET notified_version=? WHERE telegram_id=?
-        """, (version, telegram_id))
+        await db.execute("UPDATE users SET notified_version=? WHERE telegram_id=?", (version, telegram_id))
         await db.commit()
