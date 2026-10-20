@@ -21,16 +21,15 @@ async def init_db():
             )
             """)
             
-            # 2. МИГРАЦИЯ: Пробуем добавить новый столбец для версий уведомлений.
-            # Если он уже есть, возникнет OperationalError, который мы спокойно игнорируем.
+            # 2. МИГРАЦИЯ: Пробуем добавить новый столбец для версий уведомлений
             try:
                 await db.execute("ALTER TABLE users ADD COLUMN notified_version TEXT DEFAULT NULL")
                 logger.info("✅ Добавлен столбец notified_version")
             except aiosqlite.OperationalError:
-                pass  # Столбец уже существует, всё отлично
+                pass  # Столбец уже существует
 
             await db.commit()
-            logger.info("✅ База данных успешно инициализирована и проверена")
+            logger.info(f"✅ База данных успешно инициализирована по пути: {DB_PATH}")
     except Exception as e:
         logger.error(f"❌ Ошибка инициализации БД: {e}")
         raise
@@ -89,7 +88,7 @@ async def get_cached_schedule(telegram_id: int) -> tuple[str | None, int | None]
 # === СИСТЕМА УВЕДОМЛЕНИЙ ===
 
 async def get_all_user_ids() -> list[int]:
-    """Получает список ВСЕХ telegram_id пользователей, кто когда-либо запускал бота."""
+    """Получает список ВСЕХ telegram_id пользователей."""
     async with aiosqlite.connect(DB_PATH) as db:
         async with db.execute("SELECT telegram_id FROM users") as cursor:
             rows = await cursor.fetchall()
