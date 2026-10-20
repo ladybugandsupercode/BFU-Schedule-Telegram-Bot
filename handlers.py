@@ -480,6 +480,31 @@ async def show_donate(message: Message):
         parse_mode="HTML"
     )
 
+@router.message(Command("announce"))
+async def cmd_announce(message: Message):
+    """Отправить сообщение в канал уведомлений (только для админа)."""
+    from config import ANNOUNCEMENT_CHANNEL
+    
+    if message.from_user.id != ADMIN_TELEGRAM_ID:
+        await message.answer("⛔ У вас нет прав для этой команды.")
+        return
+
+    args = (message.text or "").split(maxsplit=1)
+    if len(args) < 2:
+        await message.answer("Использование: /announce Текст сообщения")
+        return
+
+    text = args[1]
+    
+    if ANNOUNCEMENT_CHANNEL:
+        try:
+            await message.bot.send_message(ANNOUNCEMENT_CHANNEL, text, parse_mode="HTML")
+            await message.answer("✅ Сообщение отправлено в канал!")
+        except Exception as e:
+            await message.answer(f"❌ Ошибка отправки в канал: {e}")
+    else:
+        await message.answer("⚠️ Канал уведомлений не настроен. Добавьте переменную ANNOUNCEMENT_CHANNEL в Railway.")
+
 # ============================================================
 #  ЗАПАСНЫЕ ОБРАБОТЧИКИ — ВСЕГДА В САМОМ КОНЦЕ ФАЙЛА!
 # ============================================================
