@@ -1,23 +1,19 @@
-# parser.py
-
 import time
+import asyncio
 import logging
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 from urllib.parse import quote
 from curl_cffi.requests import AsyncSession
 
-from config import CACHE_TTL_MINUTES
+from config import CACHE_TTL_MINUTES, SCHEDULE_API_TOKEN
 
 logger = logging.getLogger(__name__)
 
 BASE_API_URL = "https://schedule.kantiana.ru/v1/api/lessons/group"
 
-# Сервер (Railway) живёт по UTC, а студенты в Калининграде (UTC+2).
-# Без этого «сегодня» между 00:00 и 02:00 по Калининграду было бы вчерашним днём.
 TZ = ZoneInfo("Europe/Kaliningrad")
 
-# Кэш в памяти: (группа, понедельник недели) -> (время сохранения, расписание)
 _cache: dict[tuple[str, str], tuple[float, dict]] = {}
 
 
@@ -32,9 +28,7 @@ def week_monday(d: date) -> date:
 
 
 async def fetch_schedule(group: str, target: date | None = None) -> dict | None:
-    """Загружает расписание группы на НЕДЕЛЮ, в которую попадает дата target
-    (если target не указана, то на текущую неделю).
-    Возвращает словарь {"YYYY-MM-DD": [пары]} или None при ошибке."""
+    """Загружает расписание группы на НЕДЕЛЮ."""
     target = target or today_date()
     monday = week_monday(target)
     sunday = monday + timedelta(days=6)
@@ -53,33 +47,31 @@ async def fetch_schedule(group: str, target: date | None = None) -> dict | None:
     logger.info(f"Целевой URL: {url}")
 
     headers = {
-        "Accept": "application/json, text/plain, */*",
-        "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Referer": "https://schedule.kantiana.ru/",
-        "Origin": "https://schedule.kantiana.ru",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-origin",
+        "Accept": "application/json",
     }
 
+    # Добавляем официальный токен, если он есть
+    if SCHEDULE_API_TOKEN:
+        headers["X-Schedule-Token"] = SCHEDULE_API_TOKEN
+        logger.info("🔑 Используем официальный токен БФУ")
+
     try:
-        # impersonate="chrome120" заставляет библиотеку копировать отпечатки Chrome
         async with AsyncSession(impersonate="chrome120") as session:
-
-            # ШАГ 1: заходим на главную страницу, чтобы получить cookies
-            logger.info("🍪 Заходим на главную страницу для получения cookies...")
-            await session.get("https://schedule.kantiana.ru/", timeout=15)
-
-            # ШАГ 2: запрос к API с теми же cookies и заголовками
             logger.info("📡 Отправляем запрос к API расписания...")
             response = await session.get(url, headers=headers, timeout=30)
+
+            # Обработка превышения лимитов
+            if response.status_code == 429:
+                retry_after = response.headers.get("Retry-After", "60")
+                logger.warning(f"⏳ Превышен лимит запросов. Повтор через {retry_after} сек.")
+                await asyncio.sleep(int(retry_after))
+                response = await session.get(url, headers=headers, timeout=30)
 
             if response.status_code != 200:
                 logger.error(f"❌ HTTP {response.status_code} для группы {group}")
                 logger.error(f"Ответ сервера: {response.text[:500]}")
                 return None
 
-            # 👇 ВОТ ЗДЕСЬ БЫЛИ СЛОМАНЫ ОТСТУПЫ 👇
             data = response.json()
 
             logger.info(
@@ -90,8 +82,6 @@ async def fetch_schedule(group: str, target: date | None = None) -> dict | None:
 
             schedule = parse_lessons_data(data)
 
-            # Пустой ответ не кэшируем: сначала нужно понять,
-            # действительно ли API вернул пустое расписание.
             if not schedule:
                 logger.warning(
                     "Парсер не извлёк ни одной пары для группы %r. "
@@ -127,8 +117,6 @@ def parse_lessons_data(data: dict | list) -> dict:
 
         date_key = str(date_str)[:10]
 
-        # 1. Время: начало и конец (например, "10:10 - 11:40").
-        #    "or ''" защищает от случая, когда сервер вернул null (None).
         start_time = lesson.get("start_time") or ""
         end_time = lesson.get("end_time") or ""
         if start_time and end_time:
@@ -136,12 +124,10 @@ def parse_lessons_data(data: dict | list) -> dict:
         else:
             time_str = start_time[:5] if start_time else "—"
 
-        # 2. Предмет: название + тип занятия
         discipline = lesson.get("discipline") or "Неизвестный предмет"
         load = lesson.get("load") or ""
         subject = f"{discipline} ({load})" if load else discipline
 
-        # 3. Преподаватель: пытаемся собрать полное ФИО, иначе берем name или short
         teacher_obj = lesson.get("teacher") or {}
         if isinstance(teacher_obj, dict):
             full_name = f"{teacher_obj.get('last_name', '')} {teacher_obj.get('first_name', '')} {teacher_obj.get('patronymic', '')}".strip()
@@ -149,18 +135,15 @@ def parse_lessons_data(data: dict | list) -> dict:
         else:
             teacher = str(teacher_obj) if teacher_obj else "—"
 
-        # 3.1 Номер пары (если API его отдает)
         lesson_num = lesson.get("lesson_number") or lesson.get("number") or lesson.get("pair") or ""
 
-        # 4. Аудитория
         room = lesson.get("beautiful_room") or lesson.get("short_room") or lesson.get("room") or "—"
         if not room or str(room).lower() == "null":
             room = "Аудитория не указана"
 
-        # 5. Подгруппа
         subgroup = lesson.get("subgroup") or ""
         subgroup_text = f" | {subgroup}" if subgroup and subgroup != "Общая" else ""
-        
+
         if date_key not in schedule:
             schedule[date_key] = []
 
@@ -172,8 +155,6 @@ def parse_lessons_data(data: dict | list) -> dict:
             "room": room
         })
 
-    
-    # Сортируем пары по времени в каждом дне
     for date_key in schedule:
         schedule[date_key].sort(key=lambda x: x["time"])
 
