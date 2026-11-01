@@ -46,6 +46,7 @@ TEXTS = {
         "choose_lang": "🌍 <b>Выбери язык:</b>",
         "next_week": "🗓 На следующую неделю",
         "next_week_btn": "➡️ Следующая неделя",
+        "stale_data_warning": "⚠️ <b>Внимание:</b> сервер расписания БФУ сейчас недоступен. Показаны данные из кэша — они могут быть неактуальными. Попробуйте позже для получения свежей информации.",
         "group_saved": "✅ <b>Группа {group} сохранена!</b>\n\n🎯 Теперь выбери, что показать:",
         "enter_group": "👇 <b>Введи номер группы:</b>\n\n💡 Например: <code>03_ФИИТ_26_2</code>",
         "group_invalid": (
@@ -199,6 +200,7 @@ TEXTS = {
         "settings_btn": "⚙️ Settings",
         "language_btn": "🌍 Language",
         "groups_btn": "📋 Groups",
+        "stale_data_warning": "⚠️ <b>Attention:</b> BFU schedule server is currently unavailable. Showing cached data — it may be outdated. Please try again later for fresh information.",
         "help_btn": "❓ Help",
         "changelog_btn": "🆕 What's new?",
         "menu_btn": "🏠 Menu",
