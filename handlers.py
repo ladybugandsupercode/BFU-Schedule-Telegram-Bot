@@ -51,11 +51,11 @@ def format_day(date_key: str, lessons: list, lang: str) -> str:
         lines.append(line)
     return f"{header}\n\n<blockquote>{'\n\n'.join(lines[1:])}</blockquote>"
 
-async def get_schedule_for_user(telegram_id: int, day: date | None = None) -> dict | None:
+async def get_schedule_for_user(telegram_id: int, day: date | None = None) -> tuple[dict | None, bool]:
     group = await get_user_group(telegram_id)
     if not group:
-        return None
-    return await fetch_schedule(group, day)
+        return None, False
+    return await fetch_schedule_smart(group, day)
 
 def parse_user_date(text: str) -> date | None:
     cleaned = (text or "").strip().replace("/", ".").replace("-", ".").replace(",", ".")
